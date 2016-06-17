@@ -7,13 +7,13 @@ application.  Built docker images are hosted on DockerHub under the Simphony Org
 Docker image names
 ------------------
 
-1. `simphony/ubuntu-12.04-remote:{version}`
+1. `simphonyproject/ubuntu-12.04-remote:{version}`
          Ubuntu 12.04 base image with remote access support
 
-2. `simphony/ubuntu-14.04-remote:{version}`
+2. `simphonyproject/ubuntu-14.04-remote:{version}`
          Ubuntu 14.04 base image with remote access support
 
-3. `simphony/{other_image_name}:{version}`
+3. `simphonyproject/{other_image_name}:{version}`
          Built on top of one of the above two base images
 
 Docker build context for these images can be found in the git repository with tag {version}.
@@ -31,8 +31,8 @@ To deploy, follow these steps:
    $ ./scripts/create_production.sh ./base_images ./images ./wrapper $tag
 
 where $tag is used for specifying the version of the base images, available tag
-can be found on simphony/ubuntu-12.04-base or simphony/ubuntu-14.04-base on
-DockerHub.
+can be found on simphonyproject/ubuntu-12.04-base or simphonyproject/ubuntu-14.04-base
+on DockerHub.
 
 3. git checkout an orphan branch `version-x.x.x`, for example, `version-0.1.0`::
 
@@ -126,7 +126,7 @@ You may build your own images that can be run with the remote access web applica
 First, you should compose your docker image based on one of the base images hosted on DockerHub
 un the Simphony Organisation.  For example, in your Dockerfile::
 
-  FROM simphony/ubuntu-14.04-remote
+  FROM simphonyproject/ubuntu-14.04-remote
 
 Secondly, you should provide an autostart file that contains the commands to be executed on startup.
 Otherwise the desktop would be blank.  The autostart file should be executable by the user
