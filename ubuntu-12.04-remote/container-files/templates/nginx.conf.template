@@ -1,0 +1,32 @@
+server {
+        listen 8888 default_server;
+
+        root /usr/share/nginx/html;
+        index index.html index.htm;
+
+        location = $JPY_BASE_USER_URL/containers/$CONTAINER_ID {
+            try_files /redirect.html =404;
+        }
+
+        location = $JPY_BASE_USER_URL/containers/$CONTAINER_ID/loading.gif {
+            try_files /loading.gif =404;
+        }
+
+        location = $JPY_BASE_USER_URL/containers/$CONTAINER_ID/websockify {
+            rewrite ^$JPY_BASE_USER_URL/containers/$CONTAINER_ID/(.*)$ /$1 break;
+            proxy_http_version 1.1;
+            proxy_set_header Upgrade $http_upgrade;
+            proxy_set_header Connection "upgrade";
+            proxy_pass http://127.0.0.1:6081;
+            proxy_read_timeout 86400;
+        }
+
+        location $JPY_BASE_USER_URL/containers/$CONTAINER_ID/ {
+            rewrite ^$JPY_BASE_USER_URL/containers/$CONTAINER_ID/(.*)$ /$1 break;
+            proxy_set_header X-Real-IP  $remote_addr;
+            proxy_set_header X-Forwarded-For $remote_addr;
+            proxy_set_header Host $host;
+            proxy_pass http://127.0.0.1:6081;
+            max_ranges 0;
+        }
+}
