@@ -124,10 +124,9 @@ Make your own Docker images
 You may build your own images that can be run with the remote access web application.
 
 First, you should compose your docker image based on one of the base images hosted on DockerHub
-repository `simphony/base` (TODO: hypothetical now - create this repository!).  For example,
-in your Dockerfile::
+un the Simphony Organisation.  For example, in your Dockerfile::
 
-  FROM simphony/base:ubuntu-14.04-base
+  FROM simphony/ubuntu-14.04-remote
 
 Secondly, you should provide an autostart file that contains the commands to be executed on startup.
 Otherwise the desktop would be blank.  The autostart file should be executable by the user
@@ -141,7 +140,7 @@ following in its Dockerfile::
   RUN chmod 755 /etc/skel/.config/openbox/autostart
 
 Note: Further customisation related to the remote access web application should be referred to
-github.com/simphony/remote (TODO: create this repo). At the time of writing, you may attach a
+github.com/simphony/simphony-remote (pending). At the time of writing, you may attach a
 pretty name to the image by specifying the 'eu.simphony-project.docker.ui_name' label.  You may
 also provide a custom icon by first base encoding the image and then assigning the value to the
 'eu.simphony-project.docker.icon_128' label.
