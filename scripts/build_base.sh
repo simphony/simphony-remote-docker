@@ -2,7 +2,7 @@
 # This script is used for building base images in ./base_images
 # Usage: ./build_base.sh ./base_images/directory
 
-PREFIX='simphony'
+PREFIX='simphonyproject'
 
 if [ "$1" = "" ]; then
     echo "Need docker directory name"
