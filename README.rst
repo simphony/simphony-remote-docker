@@ -112,6 +112,7 @@ directly in your terminal:
 
 
 On Mac OS X or Windows, you should run the above script in your docker VM.
+You should clean up the started container once you finish testing.
 
 
 Running built images on the command-line
