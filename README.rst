@@ -110,7 +110,7 @@ directly in your terminal::
 
   $ ./scripts/test_noVNC_directly.sh image_name ./scripts/test_env_file test
 
-On Mac OS X or Windows, you should run the above script in your docker VM.
+On Mac OS X, you should run the above script in your docker VM.
 You should clean up the started container once you finish testing.
 
 
