@@ -4,7 +4,7 @@
 
 # All wrapped docker images will have the name $IMAGE_PREFIX/image_name
 # for them to be identified
-IMAGE_PREFIX=simphony
+IMAGE_PREFIX=simphonyproject
 LABEL_DOMAIN=eu.simphony-project
 
 function b64encode {
