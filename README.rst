@@ -62,11 +62,11 @@ Stage 1:
          Base (ubuntu) docker image with dependencies installed.
          They are in ./base_images
 
-Stage 2: 
+Stage 2:
          The needed application is built on top of these base docker images. Each application
          has its own Dockerfile and they are in ./images
 
-Stage 3: 
+Stage 3:
          Front-end components required for the remote access are built on top of the result of
          Stage 2.  These components are in ./wrapper
 
@@ -100,6 +100,18 @@ To build an image in ./images::
 To build all images in ./images::
 
   $ ./scripts/build_all.sh ./images ./wrapper
+
+
+Test remote access of an image locally
+--------------------------------------
+
+If you are on Linux, you may use a script provided `./scripts/test_noVNC_directly.sh`
+directly in your terminal::
+
+  $ ./scripts/test_noVNC_directly.sh image_name ./scripts/test_env_file test
+
+On Mac OS X, you should run the above script in your docker VM.
+You should clean up the started container once you finish testing.
 
 
 Running built images on the command-line
