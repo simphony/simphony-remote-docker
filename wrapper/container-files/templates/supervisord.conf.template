@@ -1,15 +1,3 @@
-[program:nginx]
-priority=5
-directory=/
-command=nginx -c /etc/nginx/nginx.conf
-user=root
-autostart=true
-autorestart=true
-stopsignal=QUIT
-stdout_logfile=/var/log/nginx_auth.log
-redirect_stderr=true
-stopasgroup=true
-
 [program:xvfb]
 priority=10
 directory=/
