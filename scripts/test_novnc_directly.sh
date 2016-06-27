@@ -71,9 +71,6 @@ if test $? != 0; then
     exit 1
 fi
 
-# Get id
-container_id=`docker inspect -f "{{ .Id }}" $3`
-
 # Get HostIp and HostPort
 host_ip=`docker inspect --format '{{ (index (index .NetworkSettings.Ports "8888/tcp") 0).HostIp }}' $3`
 host_port=`docker inspect --format '{{ (index (index .NetworkSettings.Ports "8888/tcp") 0).HostPort }}' $3`
@@ -83,10 +80,8 @@ if [[ "`uname`" != 'Linux' ]]; then
     host_ip=`docker-machine ip`
 fi
 
-# Base user URL
-JPY_BASE_USER_URL=`grep JPY_BASE_USER_URL $2 | awk -F'=' '{print $2}'`
-
 # Complete URL for inspection
-URL="http://${host_ip}:${host_port}${JPY_BASE_USER_URL}/containers/${container_id}"
+# Assume the first location gives you the right URL
+URL="http://${host_ip}:${host_port}"`docker exec $3 /bin/bash -c "grep 'location' /etc/nginx/sites-enabled/default | head -1 | grep -oE '[^ {=]+' | tail -1"`
 echo $URL
 open_path=$(which xdg-open || which gnome-open || which open) && exec "$open_path" "$URL"
