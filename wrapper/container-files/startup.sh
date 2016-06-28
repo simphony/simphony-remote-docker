@@ -40,4 +40,5 @@ cat /templates/nginx.conf.template | envsubst '$JPY_BASE_USER_URL $URL_ID' > /et
 cat /templates/supervisord.conf.template | envsubst '$USER' > /etc/supervisor/conf.d/supervisord.conf
 
 # Start the services
+nginx -c /etc/nginx/nginx.conf
 exec /usr/bin/supervisord -n -c /etc/supervisor/supervisord.conf
