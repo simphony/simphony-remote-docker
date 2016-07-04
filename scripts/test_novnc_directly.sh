@@ -49,7 +49,7 @@ if [ -z "$3" ]; then
 fi
 
 
-if test "`docker ps -a -f name=$3 | wc -l`" -gt 1; then
+if docker inspect $3 > /dev/null 2>&1; then
     read -p "$3 already exists.  Do you want to stop and/or remove it? [Y/n] " -n 1 -r
     echo
     if [[ $REPLY =~ ^[Yy]$ ]]; then
