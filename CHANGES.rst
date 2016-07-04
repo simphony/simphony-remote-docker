@@ -1,6 +1,21 @@
 SimPhoNy Remote Docker CHANGELOG
 ================================
 
+Release 0.2.0
+-------------
+
+Features
+~~~~~~~~
+
+- Support simphony-remote version 0.1.0 and 0.2.0 (#7)
+
+Fixes
+~~~~~
+
+- Start nginx outside and before supervisord (#6)
+- Added script for manual testing (#3, #10)
+
+
 Release 0.1.1
 -------------
 
