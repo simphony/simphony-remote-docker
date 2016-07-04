@@ -16,7 +16,8 @@ Docker image names
 3. `simphonyproject/{other_image_name}:{version}`
          Built on top of one of the above two base images
 
-Docker build context for these images can be found in the git repository with tag {version}.
+Docker build context for these images can be found in this repository with branch/tag
+`production-{version}`.
 
 
 Deployment for DockerHub Repo
@@ -34,9 +35,9 @@ where $tag is used for specifying the version of the base images, available tag
 can be found on simphonyproject/ubuntu-12.04-base or simphonyproject/ubuntu-14.04-base
 on DockerHub.
 
-3. git checkout an orphan branch `version-x.x.x`, for example, `version-0.1.0`::
+3. git checkout an orphan branch `production-vX.X.X`::
 
-     $ git checkout --orphan version-0.1.0
+     $ git checkout --orphan production-v0.1.0
      $ git rm -rf .
 
 4. cp the content of the directory `production` to the top directory::
@@ -48,7 +49,7 @@ on DockerHub.
      $ rm -rf production
      $ git add .
 
-6. git push to branch `version-x.x.x`
+6. git push to branch `production-vX.X.X`
 
 7. Create a tag for the branch with the same name.
 
