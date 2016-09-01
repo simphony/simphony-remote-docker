@@ -1,7 +1,5 @@
 FROM $IMAGE_NAME
 
-# startup.sh noVNC front-end, websocket,
-# nginx template and supervisor template...
 COPY container-files/ /
 
 WORKDIR /root
