@@ -1,3 +1,7 @@
+import os
+from browsepy import app
+
+
 class ReverseProxied(object):
     '''Wrap the application in this middleware and configure the
     front-end server to add these headers, to let you quietly bind
@@ -31,6 +35,8 @@ class ReverseProxied(object):
             environ['wsgi.url_scheme'] = scheme
         return self.app(environ, start_response)
 
-from browsepy import app
 
-app.wsgi_app = ReverseProxied(app)
+app.directory_base = os.environ["HOME"]
+app.directory_remove = os.environ["HOME"]
+app.directory_upload = os.environ["HOME"]
+app = ReverseProxied(app)
