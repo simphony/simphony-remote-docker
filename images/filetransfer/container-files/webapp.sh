@@ -1,2 +1,2 @@
 #!/bin/sh
-gunicorn wsgi:app -b "0.0.0.0:6081"
+gunicorn --user $USER wsgi:app -b "0.0.0.0:6081"
