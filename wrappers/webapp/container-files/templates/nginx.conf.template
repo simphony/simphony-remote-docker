@@ -4,7 +4,15 @@ server {
         root /usr/share/nginx/html;
         index index.html index.htm;
 
-        location $JPY_BASE_USER_URL/containers/$URL_ID {
+        location = $JPY_BASE_USER_URL/containers/$URL_ID {
+            try_files /redirect.html =404;
+        }
+
+        location = $JPY_BASE_USER_URL/containers/$URL_ID/loading.gif {
+            try_files /loading.gif =404;
+        }
+
+        location $JPY_BASE_USER_URL/containers/$URL_ID/ {
             proxy_set_header X-Real-IP  $remote_addr;
             proxy_set_header X-Forwarded-For $remote_addr;
             proxy_set_header Host $host;
