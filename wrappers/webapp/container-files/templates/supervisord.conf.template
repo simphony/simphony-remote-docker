@@ -1,8 +1,8 @@
 [program:webapp]
 priority=10
-directory=/
-command=sh webapp.sh
-user=root
+directory=/home/$USER
+command=sh /webapp.sh
+user=$USER
 autostart=true
 autorestart=true
 stopsignal=QUIT
