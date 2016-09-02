@@ -16,7 +16,7 @@ display_help() {
   echo "tag               - tag to be used for the base images (e.g. v0.1.0, latest, ...)"
   echo
   echo "Example:"
-  echo "  ./create_production.sh ../base_images ../images ../wrapper latest"
+  echo "  ./create_production.sh ../base_images ../images ../wrappers latest"
 }
 
 
