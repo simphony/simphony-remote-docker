@@ -1,0 +1,18 @@
+FROM simphonyproject/ubuntu-14.04-remote:latest
+
+LABEL eu.simphony-project.docker.ui_name="Upload/Download"
+LABEL eu.simphony-project.docker.description="Upload and download utility"
+
+# Simphony Framework with mayavi
+COPY build-framework /tmp/build-framework
+WORKDIR /tmp/build-framework
+
+# Fix pip
+RUN apt-get update -qq \
+    && apt-get install -y make \
+    && make base fix-pip browsepy
+
+WORKDIR /tmp
+RUN rm -rf /tmp/build-framework
+COPY container-files/webapp.sh /
+RUN chmod 755 /webapp.sh
