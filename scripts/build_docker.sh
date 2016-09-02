@@ -25,7 +25,7 @@ if [ -z "$1" ]; then
 fi
 
 if [ -z "$2" ]; then
-    echo "Need directory for the front-end wrapper (e.g. ../wrapper)"
+    echo "Need directory for the front-end wrapper (e.g. ../wrappers)"
     exit 1
 fi
 
@@ -35,14 +35,35 @@ export IMAGE_NAME=`basename $1`
 app_directory=$1
 wrapper_directory=$2
 
+# Decide which kind of wrapper to use, according to the application type.
+if [ ! -e "$app_directory/Metainfo" ]; then
+    echo "The specified app directory $app_directory does not contain the required Metainfo file."
+    echo "Cannot decide which wrapper type to use."
+    exit 1
+fi
+
+wrapper_type=`cat $app_directory/Metainfo | grep "^wrapper" | cut -d'=' -f2`
+
+if [ -z "$wrapper_type" ]; then
+    echo "The $app_directory/Metainfo does not contain a wrapper type specification"
+    echo "Please add wrapper=wrapper_type in the file"
+    exit 1
+fi
+
+if [ ! -e "$wrapper_directory/$wrapper_type/" ]; then
+    echo "The wrapper type $wrapper_type does not exist in $wrapper_directory".
+    exit 1
+fi
+
+echo "Using wrapper type $wrapper_type"
+
 # Work in a temporary directory
 tmp_dir=`mktemp tmp.XXXXXXXXX`
 rm -rf $tmp_dir
-cp -rf $app_directory $tmp_dir
-
 # Copy wrapper's file to the Docker context
-# If there is any name conflict, the wrapper always has priority
-cp -rf $wrapper_directory/* $tmp_dir/
+mkdir $tmp_dir
+cp -rf $wrapper_directory/$wrapper_type/* $tmp_dir/
+cp -rf $app_directory/* $tmp_dir/
 
 #-------------------------------
 # Build the image

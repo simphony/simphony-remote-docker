@@ -1,0 +1,9 @@
+FROM $IMAGE_NAME
+
+COPY container-files/ /
+
+WORKDIR /root
+
+# These are required for the remote access to the docker container
+EXPOSE 8888
+ENTRYPOINT ["/startup.sh"]
