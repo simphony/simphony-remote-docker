@@ -36,7 +36,7 @@ class ReverseProxied(object):
         return self.app(environ, start_response)
 
 
-app.directory_base = os.environ["HOME"]
-app.directory_remove = os.environ["HOME"]
-app.directory_upload = os.environ["HOME"]
+app.config.directory_base = os.environ["HOME"]
+app.config.directory_remove = os.environ["HOME"]
+app.config.directory_upload = os.environ["HOME"]
 app = ReverseProxied(app)
