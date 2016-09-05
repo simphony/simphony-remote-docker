@@ -1,3 +1,3 @@
 #!/bin/sh
-export HOME="/home/user"
-gunicorn --user user --group user wsgi:app -b "0.0.0.0:6081"
+export HOME="/home/$USER"
+gunicorn --user $USER --group $USER wsgi:app -b "0.0.0.0:6081"
