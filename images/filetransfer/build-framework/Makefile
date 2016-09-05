@@ -23,4 +23,4 @@ browsepy:
 	# Install a specific PR on top of 0.4.0 that fixes and encoding problem.
 	# See https://github.com/ergoithz/browsepy/pull/2
 	pip install gunicorn==19.6
-	pip install git+https://github.com/stefanoborini/browsepy.git@3487ab3b4c3d3b264d83334db3148c45cfeb60a6
+	pip install git+https://github.com/ergoithz/browsepy/commit/203ac85d6a1552aca0d7ece54d779b94d8a85822
