@@ -4,6 +4,24 @@ Docker specification for SimPhoNy Remote App project
 Source code for composing Dockerfiles that support remote access using Simphony-remote web
 application.  Built docker images are hosted on DockerHub under the Simphony Organisation.
 
+
+Overall concept and layout
+--------------------------
+
+We build images by combining three parts:
+
+1. A base image (a plain ubuntu), found under `base_images`
+2. Boilerplate that just sets up the basics of the infrastructure (e.g. vnc), 
+   found under `wrappers`
+3. Specifics for our application (under `images`)
+
+The composition is done by copying and deploying the last two in a temporary directory
+and then use docker building facilities to generate the final image. Note that Dockerfile
+files are properly generated and merged together.
+
+Automation of the above points is provided in the `scripts` directory.
+
+
 Docker image names
 ------------------
 
@@ -29,7 +47,7 @@ To deploy, follow these steps:
 
 2. in the top directory, do::
 
-   $ ./scripts/create_production.sh ./base_images ./images ./wrapper $tag
+   $ ./scripts/create_production.sh ./base_images ./images ./wrappers $tag
 
 where $tag is used for specifying the version of the base images, available tag
 can be found on simphonyproject/ubuntu-12.04-base or simphonyproject/ubuntu-14.04-base
@@ -69,10 +87,11 @@ Stage 2:
 
 Stage 3:
          Front-end components required for the remote access are built on top of the result of
-         Stage 2.  These components are in ./wrapper
+         Stage 2.  These components are in ./wrappers
 
 Scripts are provided in ./scripts for building the above images with the appropriate labels,
 names and tags.
+
 
 Scripts for Development
 -----------------------
@@ -96,11 +115,11 @@ For example, to build a base image::
 
 To build an image in ./images::
 
-  $ ./scripts/build_docker.sh ./images/simphony-framework-mayavi/ ./wrapper/
+  $ ./scripts/build_docker.sh ./images/simphony-framework-mayavi/ ./wrappers/
 
 To build all images in ./images::
 
-  $ ./scripts/build_all.sh ./images ./wrapper
+  $ ./scripts/build_all.sh ./images ./wrappers
 
 
 Test remote access of an image locally
@@ -131,8 +150,8 @@ Instead you should override the entrypoint::
 Running the docker image from the command-line is often useful for debugging.
 
 
-Make your own Docker images
----------------------------
+Make your own Docker images: vncapp
+-----------------------------------
 
 You may build your own images that can be run with the remote access web application.
 
@@ -157,3 +176,41 @@ github.com/simphony/simphony-remote (pending). At the time of writing, you may a
 pretty name to the image by specifying the 'eu.simphony-project.docker.ui_name' label.  You may
 also provide a custom icon by first base encoding the image and then assigning the value to the
 'eu.simphony-project.docker.icon_128' label.
+
+Finally, a file `Metainfo` should contain which wrapper you want to use: in this case, the
+file should contain::
+
+  wrapper=vncapp
+
+
+Make your own Docker images: webapp
+-----------------------------------
+
+To build a container hosting a web application, the process is similar to the vncapp,
+but we will use a different wrapper, and we need to provide an appropriate startup script.
+
+the wrapper to use is webapp, and is selected by having the following entry in the `Metainfo`
+file::
+  
+  wrapper=webapp
+
+The wrapper is configured to start up, via supervisord, the script `webapp.sh` in the `/`
+directory. This script is executed as root, and must start the web application.
+There are a few caveats to the web application requirements for export:
+
+- It must listen on port 6081. nginx will reverse proxy it to port 8888
+- Note that nginx will _not_ perform any URL rewriting, so the application
+  must be able to deal with the full URL. In general this is provided as an option
+  `base url`. A common gotcha for this is to have an application that does not
+  add the base url to its links, returning a front page that works, but can't be
+  navigated because all links are based on `/`. Your application must support
+  appropriate links with the specified base url.
+- Note also that the container nginx is reverse proxying the request to your
+  application, so your application will see requests coming from nginx. This
+  might have consequences depending on how your application is designed.
+
+The `webapp.sh`, and thus your application, will be started as root with HOME set as `/root`
+If you want to run as user (recommended) you have to export HOME to the appropriate
+path, and change to the specified user (e.g. using sudo or the appropriate
+options of your application) inside the `webapp.sh` script.
+
