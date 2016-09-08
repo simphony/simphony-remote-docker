@@ -25,11 +25,10 @@ class ReverseProxied(object):
         return self.app(environ, start_response)
 
 
-homedir = os.environ["HOME"]
 app.config.update(
-    directory_base=homedir,
-    directory_start=homedir,
-    directory_remove=homedir,
-    directory_upload=homedir,
+    directory_base="/",
+    directory_start="/",
+    directory_remove="/",
+    directory_upload="/",
 )
 app = ReverseProxied(app)
