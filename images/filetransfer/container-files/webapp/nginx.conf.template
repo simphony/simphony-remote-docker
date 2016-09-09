@@ -38,12 +38,13 @@ http {
             alias /webapp/bower_components/;
         }
 
-        location ~ \.php$ {
-          fastcgi_split_path_info ^(.+\.php)(/.+)$;
-          fastcgi_pass unix:/var/run/php5-fpm.sock;
-          fastcgi_index index.php;
-          include fastcgi_params;
-        }
+        location ~ $JPY_BASE_USER_URL/containers/$URL_ID/(.+\.php) {
+            root /webapp/bower_components/angular-filemanager/;
+            fastcgi_split_path_info   ^(.+\.php)(.*)$; 
+            include /etc/nginx/fastcgi_params;
+            fastcgi_param SCRIPT_FILENAME $document_root/$1;
+            fastcgi_pass unix:/var/run/php5-fpm.sock;
+        }    
     }
 }
 
