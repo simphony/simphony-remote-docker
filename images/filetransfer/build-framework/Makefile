@@ -11,4 +11,4 @@ app:
 	npm install -g bower
 	cd /webapp && bower install --allow-root --save angular-filemanager
 	# Replace default index with one with appropriate configuration
-	cp /build-framework/index.html /webapp/bower_components/angular-filemanager/
+	cp index.html /webapp/bower_components/angular-filemanager/
