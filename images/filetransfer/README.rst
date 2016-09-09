@@ -1,7 +1,7 @@
 File transfer 
 =============
 
-Uses browsepy to provide input/output access to the shared disk.
+File manager to provide input/output access to the shared disk.
 
 Operating System
 ----------------

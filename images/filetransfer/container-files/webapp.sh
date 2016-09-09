@@ -1,3 +1,4 @@
 #!/bin/sh
 export HOME="/home/$USER"
-gunicorn --user $USER --group $USER wsgi:app -b "0.0.0.0:6081"
+cat /webapp/nginx.conf.template | envsubst '$JPY_BASE_USER_URL $URL_ID' > /webapp/nginx.conf
+nginx -c /webapp/nginx.conf
