@@ -12,3 +12,4 @@ app:
 	cd /webapp && bower install --allow-root --save angular-filemanager
 	# Replace default index with one with appropriate configuration
 	cp index.html /webapp/bower_components/angular-filemanager/
+	cp bridge-index.php /webapp/bower_components/angular-filemanager/bridges/php-local/index.php

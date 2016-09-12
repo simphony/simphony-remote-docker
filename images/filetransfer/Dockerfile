@@ -6,6 +6,7 @@ LABEL eu.simphony-project.docker.description="Upload and download utility"
 COPY build-framework /tmp/build-framework
 COPY container-files/webapp.sh /
 COPY container-files/webapp /webapp
+COPY container-files/templates/php-fpm-pool.conf.template /templates/php-fpm-pool.conf.template
 
 WORKDIR /tmp/build-framework
 
