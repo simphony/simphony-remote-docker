@@ -35,6 +35,11 @@ export URL_ID="`(test $URL_ID && echo $URL_ID) || basename $_tmp`"
 id -u $USER &>/dev/null || useradd --create-home --shell /bin/bash --user-group $USER
 echo "$USER:$USER" | chpasswd
 
+# Make sure that the workspace is actually writable by the user.
+if [ -e /workspace ]; then
+    chmod 777 /workspace
+fi
+
 # Parse the templates and put their result in the appropriate places
 cat /templates/nginx.conf.template | envsubst '$JPY_BASE_USER_URL $URL_ID' > /etc/nginx/sites-enabled/default
 cat /templates/supervisord.conf.template | envsubst '$USER' > /etc/supervisor/conf.d/supervisord.conf
