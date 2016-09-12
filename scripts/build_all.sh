@@ -4,24 +4,22 @@
 
 # The path to this script file
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+. functions.sh
+
+display_help() {
+  echo "Usage: $0 config_file"
+  echo
+  echo "Builds all the containers from the production directory specified in the configuration file."
+}
 
 if [ -z "$1" ]; then
-    echo "Need path to the directory that holds all the images"
+    echo "Need path to the config file"
+    echo 
+    display_help
     exit 1
 fi
 
-wd=${1%/}
+config_file=$1
 
-if [ -z "$2" ]; then
-    echo "Need directory for the front-end wrapper (e.g. ../wrapper)"
-    exit 1
-fi
-
-for image in `ls -d $wd/*/`; do
-    echo "Building $image"
-    $DIR/build_docker.sh $image $2
-    if test $? -ne 0; then
-        echo "Error occurred while building $image. Exiting"
-        exit
-    fi
-done
+$DIR/build_base.sh $config_file
+$DIR/build_app.sh $config_file

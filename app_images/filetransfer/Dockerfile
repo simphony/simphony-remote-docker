@@ -1,4 +1,4 @@
-FROM simphonyproject/ubuntu-14.04-remote
+FROM simphonyproject/ubuntu-14.04-remote-webapp
 
 LABEL eu.simphony-project.docker.ui_name="File manager"
 LABEL eu.simphony-project.docker.description="Upload and download utility"

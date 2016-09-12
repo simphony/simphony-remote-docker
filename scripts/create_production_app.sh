@@ -2,50 +2,57 @@
 # This script is used for deploying application images for its
 # DockerHub Automated Build Repository.
 set -e
+# The path to this script file
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+LABEL_DOMAIN=eu.simphony-project
+
+. functions.sh
 
 display_help() {
-  echo "Usage: $0 image_directory tag production_dir"
+  echo "Usage: $0 build.conf"
   echo
   echo "Creates a production directory containing the docker context for DockerHub auto build"
   echo
-  echo "image_directory  - path to the directory where each subdirectory is a Docker context"
-  echo "tag              - tag to be used for the base images"
-  echo "production_dir   - path to the directory where the output Docker context should be"
-  echo
-  echo "Example:"
-  echo "  ./create_production_app.sh ../images latest"
 }
 
-
 if [ -z "$1" ]; then
-    echo "Need path to the directory that holds all the images"
+    echo "Need path to the config file"
+    echo
     display_help
     exit 1
 fi
 
-if [ -z "$2" ]; then
-    echo "Please specify the tag for the base images"
+config_file=$1
+
+# The directory that contains all base images
+extract_key "$DIR/$config_file" "app_images_dir"
+if [ -z "$RESULT" ]; then
+    echo "Need app_images_dir in config file"
     display_help
     exit 1
 fi
+app_images_dir=$DIR/${RESULT%/}
 
-if [ -z "$3" ]; then
-    echo "Please specify the path to the production directory"
+extract_key "$DIR/$config_file" "tag"
+if [ -z "$RESULT" ]; then
+    echo "Need tag in config file"
     display_help
     exit 1
 fi
-
-# The directory that contains all images
-images_dir=$1
-
-# Tag for the base images
-tag=$2
+tag=$RESULT
 
 # production directory
-production_dir=$3
+extract_key "$DIR/$config_file" "production_dir"
+if [ -z "$RESULT" ]; then
+    echo "Need production_dir in config file"
+    display_help
+    exit 1
+fi
+production_dir=$DIR/${RESULT%/}
 
 # Construct docker context for production
-for image in `ls -d $images_dir/*/`; do
+for image in `ls -d $app_images_dir/*/`; do
     image_name=`basename $image`
 
     # One sub-directory for each image
@@ -56,16 +63,22 @@ for image in `ls -d $images_dir/*/`; do
     mkdir -p $production_dir/$image_name
 
     # Copy files from the image directory to the production sub-directory
-    echo "Copying files from " $images_dir/$image_name
-    rsync -a --exclude='*~' $images_dir/$image_name/* $production_dir/$image_name/
+    echo "Copying files from " $app_images_dir/$image_name
+    rsync -a --exclude='*~' $app_images_dir/$image_name/* $production_dir/$image_name/
 
-    # Append wrapper's Dockerfile to the one for the image
+    # Replace the tag in the docker file FROM entry
     sed 's/^FROM \([^:]*\)/FROM \1:'$tag'/g' $production_dir/$image_name/Dockerfile > tmp
+
+    # if there's an icon, base encode it and use it.
+    if test -e $app_images_dir/$image_name/icon_128.png; then
+        b64encode $app_images_dir/$image_name/icon_128.png
+        echo "LABEL ${LABEL_DOMAIN}.docker.icon_128=\"${RESULT}\"" >>tmp
+    fi
+
     mv tmp $production_dir/$image_name/Dockerfile
 done
 
 echo "***********************************************************************"
-echo "Base images would be pulled from "$2
-echo "Now all the files for Docker build are ready in "$production_dir
+echo "Now all the files for Docker build are ready in $production_dir"
 echo "Please push this directory to an orphan branch"
 echo "***********************************************************************"
