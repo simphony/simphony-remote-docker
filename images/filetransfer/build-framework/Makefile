@@ -1,26 +1,15 @@
-# Makefile for browsepy
-
-.PHONY: clean base browsepy
+.PHONY: clean base
 
 base:
 	apt-get update -qq
-	apt-get install -y build-essential subversion wget software-properties-common
+	apt-get install -y build-essential wget software-properties-common
 	add-apt-repository ppa:git-core/ppa -y
-	apt-get install git -y
-
-fix-pip:
-	wget https://bootstrap.pypa.io/get-pip.py
-	python get-pip.py
-	rm get-pip.py
-	pip install --upgrade setuptools
-	pip install --upgrade virtualenv
-	pip install --upgrade pip
-	@echo
-	pip --version
-	@echo "Latest pip installed"
-
-browsepy:
-	# Install a specific PR on top of 0.4.0 that fixes and encoding problem.
-	# See https://github.com/ergoithz/browsepy/pull/2
-	pip install gunicorn==19.6
-	pip install git+https://github.com/ergoithz/browsepy.git@203ac85d6a1552aca0d7ece54d779b94d8a85822
+	apt-get install git nodejs npm nodejs-legacy php5-fpm -y
+	update-rc.d php5-fpm defaults
+	
+app:
+	npm install -g bower
+	cd /webapp && bower install --allow-root --save angular-filemanager
+	# Replace default index with one with appropriate configuration
+	cp index.html /webapp/bower_components/angular-filemanager/
+	cp bridge-index.php /webapp/bower_components/angular-filemanager/bridges/php-local/index.php

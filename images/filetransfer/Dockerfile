@@ -1,18 +1,20 @@
 FROM simphonyproject/ubuntu-14.04-remote
 
-LABEL eu.simphony-project.docker.ui_name="Upload/Download"
+LABEL eu.simphony-project.docker.ui_name="File manager"
 LABEL eu.simphony-project.docker.description="Upload and download utility"
 
-# Simphony Framework with mayavi
 COPY build-framework /tmp/build-framework
+COPY container-files/webapp.sh /
+COPY container-files/webapp /webapp
+COPY container-files/templates/php-fpm-pool.conf.template /templates/php-fpm-pool.conf.template
+
 WORKDIR /tmp/build-framework
 
 # Fix pip
 RUN apt-get update -qq \
     && apt-get install -y make \
-    && make base fix-pip browsepy
+    && make base app
 
 WORKDIR /tmp
 RUN rm -rf /tmp/build-framework
-COPY container-files/webapp.sh /
 RUN chmod 755 /webapp.sh
