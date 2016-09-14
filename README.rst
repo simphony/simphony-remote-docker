@@ -10,29 +10,27 @@ Overall concept and layout
 
 We build images by combining three parts:
 
-1. A base image (a plain ubuntu), found under `base_images`
-2. Boilerplate that just sets up the basics of the infrastructure (e.g. vnc), 
-   found under `wrappers`
-3. Specifics for our application (under `images`)
+1. A base docker file (a plain ubuntu with some personalized additions), found under `base_images`
+2. Boilerplate that just sets up the basics of the infrastructure (e.g. vnc), found under `wrappers`
+3. For application images, the specifics for our application (under `app_images`)
 
 The composition is done by copying and deploying the last two in a temporary directory
 and then use docker building facilities to generate the final image. Note that Dockerfile
 files are properly generated and merged together.
 
 Automation of the above points is provided in the `scripts` directory.
+These scripts are driven by a configuration file `build.conf`. Details of its usage are
+provided in the inline comments.
 
 
 Docker image names
 ------------------
 
-1. `simphonyproject/ubuntu-12.04-remote:{version}`
-         Ubuntu 12.04 base image with remote access support
-
-2. `simphonyproject/ubuntu-14.04-remote:{version}`
-         Ubuntu 14.04 base image with remote access support
+1. `simphonyproject/ubuntu-<ubuntu-version>-<wrapper>:{version}`
+         Ubuntu of a given version, together with the given wrapper.
 
 3. `simphonyproject/{other_image_name}:{version}`
-         Built on top of one of the above two base images
+         Built on top of one of the above base images
 
 Docker build context for these images can be found in this repository with branch/tag
 `production-{version}`.
@@ -43,15 +41,16 @@ Deployment for DockerHub Repo
 
 To deploy, follow these steps:
 
-1. git checkout the commit for deployment
+1. git checkout the commit for deployment, then modify the `scripts/build.conf` to the
+   appropriate tag. This parameter is used for specifying the version of the base images.
+   Available tag can be found on simphonyproject/ubuntu-12.04-vncapp or 
+   simphonyproject/ubuntu-14.04-vncapp/webapp on DockerHub.
 
 2. in the top directory, do::
 
-   $ ./scripts/create_production.sh ./base_images ./images ./wrappers $tag
+     $ ./scripts/create_production.sh ./build.conf
 
-where $tag is used for specifying the version of the base images, available tag
-can be found on simphonyproject/ubuntu-12.04-base or simphonyproject/ubuntu-14.04-base
-on DockerHub.
+   This generates the `production` directory.
 
 3. git checkout an orphan branch `production-vX.X.X`::
 
@@ -72,55 +71,39 @@ on DockerHub.
 7. Create a tag for the branch with the same name.
 
 
-Building docker images locally
-------------------------------
-
-Docker images ready to be used by the web service are built in three stages.
-
-Stage 1:
-         Base (ubuntu) docker image with dependencies installed.
-         They are in ./base_images
-
-Stage 2:
-         The needed application is built on top of these base docker images. Each application
-         has its own Dockerfile and they are in ./images
-
-Stage 3:
-         Front-end components required for the remote access are built on top of the result of
-         Stage 2.  These components are in ./wrappers
-
-Scripts are provided in ./scripts for building the above images with the appropriate labels,
-names and tags.
-
-
 Scripts for Development
 -----------------------
 
-- ./scripts/build\_base.sh: Build base docker images from which other application docker images are built
+The scripts directory contains building scripts to build the images in the
+`production` directory. Running the `create_production.sh` script is therefore
+needed before using these scripts. To guarantee the use of the produced base
+images, the tag in the `build.conf` must be set to `latest`.
 
-- ./scripts/build\_docker.sh: Build individual docker image from the Dockerfile in a given directory, and
-  then from the built image, add noVNC and other components required by the remote access
+- ./scripts/build\_base.sh: Build base docker images from which other application docker images are built upon
 
-- ./scripts/build\_all.sh : Build all docker images under the given directory, i.e. call ./build\_docker.sh
-  for all subdirectories in the given directory
+- ./scripts/build\_app.sh: Build application docker images 
+ 
+- ./scripts/build\_docker.sh: Support script to build a requested image. You can use this script to build a specific
+  application image.
+
+- ./scripts/build\_all.sh: Build first the base images, then the application images.
 
 IMPORTANT: if you deploy new images, do ensure that containers from the old images are deleted,
 otherwise the user will continue to use the old container instead of creating a new one from
-the new imaegs.
-To do so, check ``docker ps -a`` and then do ``docker rm`` of all the obsolete containers.
+the new images.  To do so, check ``docker ps -a`` and then do ``docker rm`` of all the obsolete containers.
 
-For example, to build a base image::
+For example, to build a base image from the base docker and the wrapper script, do::
+ 
+  $ ./scripts/build_base.sh ./build.conf
+ 
+ To build all images::
+ 
+  $ ./scripts/build_all.sh ./build.conf
 
-  $ ./scripts/build_base.sh ./base_images
-
-To build an image in ./images::
-
-  $ ./scripts/build_docker.sh ./images/simphony-framework-mayavi/ ./wrappers/
-
-To build all images in ./images::
-
-  $ ./scripts/build_all.sh ./images ./wrappers
-
+ To build an application image::
+ 
+  $ ./scripts/build_docker.sh ./production/simphony-framework-mayavi/ 
+ 
 
 Test remote access of an image locally
 --------------------------------------
@@ -149,7 +132,6 @@ Instead you should override the entrypoint::
 
 Running the docker image from the command-line is often useful for debugging.
 
-
 Make your own Docker images: vncapp
 -----------------------------------
 
@@ -158,7 +140,7 @@ You may build your own images that can be run with the remote access web applica
 First, you should compose your docker image based on one of the base images hosted on DockerHub
 un the Simphony Organisation.  For example, in your Dockerfile::
 
-  FROM simphonyproject/ubuntu-14.04-remote
+  FROM simphonyproject/ubuntu-14.04-vncapp
 
 Secondly, you should provide an autostart file that contains the commands to be executed on startup.
 Otherwise the desktop would be blank.  The autostart file should be executable by the user
@@ -177,22 +159,14 @@ pretty name to the image by specifying the 'eu.simphony-project.docker.ui_name' 
 also provide a custom icon by first base encoding the image and then assigning the value to the
 'eu.simphony-project.docker.icon_128' label.
 
-Finally, a file `Metainfo` should contain which wrapper you want to use: in this case, the
-file should contain::
-
-  wrapper=vncapp
-
-
 Make your own Docker images: webapp
 -----------------------------------
 
 To build a container hosting a web application, the process is similar to the vncapp,
-but we will use a different wrapper, and we need to provide an appropriate startup script.
+but we will use a different base image, and we need to provide an appropriate startup script.
+The wrapper to use is webapp, and is selected as before::
 
-the wrapper to use is webapp, and is selected by having the following entry in the `Metainfo`
-file::
-  
-  wrapper=webapp
+  FROM simphonyproject/ubuntu-14.04-webapp
 
 The wrapper is configured to start up, via supervisord, the script `webapp.sh` in the `/`
 directory. This script is executed as root, and must start the web application.
@@ -213,4 +187,3 @@ The `webapp.sh`, and thus your application, will be started as root with HOME se
 If you want to run as user (recommended) you have to export HOME to the appropriate
 path, and change to the specified user (e.g. using sudo or the appropriate
 options of your application) inside the `webapp.sh` script.
-

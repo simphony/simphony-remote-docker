@@ -11,7 +11,9 @@ the final application. At the moment we have two types of wrapper:
               images are supposed to personalise this script to start
               the appropriate web application.
 
-Individual docker images must specify which wrapper they need. They do
-so with a Metainfo file containing the mandatory entry `wrapper`, e.g.::
+They are combined (copied) with the `base_image` to provide the final Docker
+image that is usable for our application needs.
 
-    wrapper=vncapp
+Individual application images must then choose the appropriate base image.
+For example, an application relying on VNC to work must use e.g. 
+`ubuntu-14.04-vncapp` as base image.

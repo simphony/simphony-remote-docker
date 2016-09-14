@@ -9,7 +9,7 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 display_help() {
   echo "Usage: $0 config_file"
   echo
-  echo "Builds all the containers from the production directory specified in the configuration file."
+  echo "Builds all the application containers from the production directory specified in the configuration file."
 }
 
 if [ -z "$1" ]; then
@@ -21,7 +21,6 @@ fi
 
 config_file=$1
 
-# production directory
 extract_key "$DIR/$config_file" "production_dir"
 if [ -z "$RESULT" ]; then
     echo "Need production_dir in config file"
@@ -30,26 +29,22 @@ if [ -z "$RESULT" ]; then
 fi
 production_dir=$DIR/${RESULT%/}
 
-extract_key "$DIR/$config_file" "build_base"
+extract_key "$DIR/$config_file" "app_images_dir"
 if [ -z "$RESULT" ]; then
-    echo "Need build_base in config file"
+    echo "Need app_images_dir in config file"
     display_help
     exit 1
 fi
-build_base=$RESULT
+app_images_dir=$DIR/${RESULT%/}
 
-# Construct docker context for production
-for entry in $build_base; do
-    base_image_name=`echo $entry | cut -d':' -f1`
-    wrapper_name=`echo $entry | cut -d':' -f2`
-    final_image_name=${base_image_name}-${wrapper_name}
-
+for image_dir in `ls -d $app_images_dir/*/`; do
+    image_name=`basename $image_dir`
     # One sub-directory for each image
-    echo "Building "$production_dir/$final_image_name
+    echo "Building "$production_dir/$image_name
 
-    $DIR/build_docker.sh $production_dir/$final_image_name
+    $DIR/build_docker.sh $production_dir/$image_name
     if test $? -ne 0; then
-        echo "Error occurred while building $production_dir/$final_image_name. Exiting"
+        echo "Error occurred while building $production_dir/$image_name. Exiting"
         exit
     fi
 done

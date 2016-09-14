@@ -1,4 +1,4 @@
-FROM simphonyproject/ubuntu-14.04-remote
+FROM simphonyproject/ubuntu-14.04-webapp
 
 LABEL eu.simphony-project.docker.ui_name="Jupyter"
 LABEL eu.simphony-project.docker.description="Jupyter notebook"

@@ -1,6 +1,6 @@
-FROM simphonyproject/ubuntu-14.04-remote
+FROM simphonyproject/ubuntu-14.04-vncapp
 
-LABEL eu.simphony-project.docker.ui_name="Simphony Framework (w/ mayavi)"
+LABEL eu.simphony-project.docker.ui_name="Simphony Framework (w/ Mayavi)"
 LABEL eu.simphony-project.docker.description="Ubuntu machine with simphony framework preinstalled"
 
 

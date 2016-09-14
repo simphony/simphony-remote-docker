@@ -1,4 +1,4 @@
-FROM simphonyproject/ubuntu-14.04-remote
+FROM simphonyproject/ubuntu-14.04-webapp
 
 LABEL eu.simphony-project.docker.ui_name="File manager"
 LABEL eu.simphony-project.docker.description="Upload and download utility"
@@ -6,7 +6,6 @@ LABEL eu.simphony-project.docker.description="Upload and download utility"
 COPY build-framework /tmp/build-framework
 COPY container-files/webapp.sh /
 COPY container-files/webapp /webapp
-COPY container-files/templates/php-fpm-pool.conf.template /templates/php-fpm-pool.conf.template
 
 WORKDIR /tmp/build-framework
 
