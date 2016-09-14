@@ -1,0 +1,11 @@
+FROM $IMAGE_NAME
+
+# startup.sh noVNC front-end, websocket,
+# nginx template and supervisor template...
+COPY container-files/ /
+
+WORKDIR /root
+
+# These are required for the remote access to the docker container
+EXPOSE 8888
+ENTRYPOINT ["/startup.sh"]
