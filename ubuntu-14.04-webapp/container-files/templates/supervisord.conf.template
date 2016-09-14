@@ -1,0 +1,11 @@
+[program:webapp]
+priority=10
+directory=/
+command=sh /webapp.sh
+user=root
+autostart=true
+autorestart=true
+stopsignal=QUIT
+stdout_logfile=/var/log/webapp.log
+redirect_stderr=true
+stopasgroup=true
