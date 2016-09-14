@@ -1,6 +1,20 @@
 SimPhoNy Remote Docker CHANGELOG
 ================================
 
+Release 0.3.0
+-------------
+
+Features
+~~~~~~~~
+
+- Supports two separated docker base images, one for XWindows applications (-vncapp) and
+  one for web applications (-webapp). This deprecates the old base image (-remote)
+- Added `filetransfer` and `jupyterhub` images to provide a File navigator and a jupyter notebook
+- Reorganization of layout and build scripts.
+- Unified development vs deployment approach to images building. Now the images are always
+  prepared in the `production` directory, and built with the build scripts from this directory.
+- Added documementation about the setup of the production, docker hub automatic build.
+
 Release 0.2.0
 -------------
 
