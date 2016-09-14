@@ -14,65 +14,120 @@ We build images by combining three parts:
 2. Boilerplate that just sets up the basics of the infrastructure (e.g. vnc), found under `wrappers`
 3. For application images, the specifics for our application (under `app_images`)
 
-The composition is done by copying and deploying the last two in a temporary directory
-and then use docker building facilities to generate the final image. Note that Dockerfile
+The composition is done by copying and deploying the first two together in a base image+wrapper
+and then use docker building facilities to generate the image. Note that Dockerfile
 files are properly generated and merged together.
 
 Automation of the above points is provided in the `scripts` directory.
 These scripts are driven by a configuration file `build.conf`. Details of its usage are
 provided in the inline comments.
 
+The simphony-remote-docker repository has two branches: 
+- `master` contains the above files, and all the generating infrastructure.
+- `production` contains the built and ready docker layout generated from the 
+  above scripts.  Autobuilds of docker images on Docker Hub is 
+  done from this branch.
 
 Docker image names
 ------------------
 
 1. `simphonyproject/ubuntu-<ubuntu-version>-<wrapper>:{version}`
          Ubuntu of a given version, together with the given wrapper.
+         Example `simphonyproject/ubuntu-14.04-webapp:v0.3.0`
 
 3. `simphonyproject/{other_image_name}:{version}`
-         Built on top of one of the above base images
+         Built on top of one of the above base images.
+         Example `simphonyproject/filetransfer`
 
-Docker build context for these images can be found in this repository with branch/tag
-`production-{version}`.
+Docker build context for these images can be found in this repository in branch production, tag 
+`v{version}`.
 
+**IMPORTANT**: Due to DockerHub limitations in tag management when building, 
+these tags `vX.X.X` are reserved to the production branch. They will be used to
+tag the docker images.  For the master commit that generated the production,
+use `master-vX.X.X` instead.
 
-Deployment for DockerHub Repo
------------------------------
+Development/Deployment for DockerHub Repo
+-----------------------------------------
 
-To deploy, follow these steps:
+Build images
+''''''''''''
+
+To generate the usable Docker layout, follow these steps:
 
 1. git checkout the commit for deployment, then modify the `scripts/build.conf` to the
    appropriate tag. This parameter is used for specifying the version of the base images.
    Available tag can be found on simphonyproject/ubuntu-12.04-vncapp or 
-   simphonyproject/ubuntu-14.04-vncapp/webapp on DockerHub.
+   simphonyproject/ubuntu-14.04-vncapp/webapp on DockerHub. If you are doing development
+   you should use `latest`. If you are releasing a version, you should pick an appropriate
+   one, in the form `vX.X.X`. This tag will be added as the FROM dependency to all App images.
 
 2. in the top directory, do::
 
      $ ./scripts/create_production.sh ./build.conf
 
-   This generates the `production` directory.
+   This generates the `production` directory containing the built Dockerfile and 
+   the associated files.
 
-3. git checkout an orphan branch `production-vX.X.X`::
+These two steps are enough to create the buildable Dockerfiles and the associated
+files. Skip to `Development` section if that's the case.
 
-     $ git checkout --orphan production-v0.1.0
+Configure Docker Hub
+''''''''''''''''''''
+
+To do deployment and autobuild, first you have to configure DockerHub, but only if you added 
+new images to your collection. If so, follow these steps for each new image you
+want to add. Taking a freshly added `simphonyproject/filemanager` image as an
+example:
+
+1. Go to `hub.docker.com` and log in with your credentials to the `simphonyproject`.
+   You need to be authorized to do so.
+
+2. Click `Create > Create automated build` in the topbar menu.
+
+3. Click the giant `create auto build Github` button, 
+   select `simphony` and `simphony-remote-docker`
+
+4. specify the conventional name (same as the directory you got out of
+   `production`: `filemanager`), title, and description. Click the customize button, and specify
+   two entries in the resulting list:
+   
+   - Push type: Branch, Name: production, Dockerfile location: `/filemanager`, Docker tag: latest.
+   - Push type: tag, Name `/^v[0-9.]+$/`, Dockerfile location: `/filemanager`, Docker tag: <leave empty>
+
+Now DockerHub is ready to automatically build the filemanager image when you push appropriately.
+
+Deploying images
+''''''''''''''''
+
+To perform deployment you need to move the content of the `production` directory in the `production` branch:
+
+1. tag with `master-vX.X.X` the commit you used to generate the production,
+   possibly using a PR to do so while adding the appropriate docs, and change the tag as described
+   above.
+
+2. git checkout the `production` branch. This branch is an orphan branch where the finalized
+   Dockerfiles are stored::
+
+     $ git checkout production
      $ git rm -rf .
 
-4. cp the content of the directory `production` to the top directory::
+3. cp the content of the directory `production` to the top directory, and get rid of the empty dir::
 
      $ cp -rf production/* .
-
-5. git add these content (excluding `production`)::
-
      $ rm -rf production
+
+4. git add these content, tag them with the `vX.X.X` and push them to origin::
+
      $ git add .
+     $ git tag vX.X.X
+     $ git push --tags production origin
 
-6. git push to branch `production-vX.X.X`
-
-7. Create a tag for the branch with the same name.
+This will trigger the build on DockerHub for both latest and the tag you just pushed.
 
 
-Scripts for Development
------------------------
+Development
+-----------
 
 The scripts directory contains building scripts to build the images in the
 `production` directory. Running the `create_production.sh` script is therefore
@@ -187,3 +242,4 @@ The `webapp.sh`, and thus your application, will be started as root with HOME se
 If you want to run as user (recommended) you have to export HOME to the appropriate
 path, and change to the specified user (e.g. using sudo or the appropriate
 options of your application) inside the `webapp.sh` script.
+
