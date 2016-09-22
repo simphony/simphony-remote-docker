@@ -20,6 +20,21 @@ if [[ "${JPY_BASE_USER_URL: -1}" = "/" ]]; then
     exit 1
 fi
 
+if [[ $X11_WIDTH = "" ]]; then
+    export X11_WIDTH="1024"
+fi
+
+if [[ $X11_HEIGHT = "" ]]; then
+    export X11_HEIGHT="768"
+fi
+
+if [[ $X11_DEPTH = "" ]]; then
+    export X11_DEPTH="16"
+fi
+
+export X11_RESOLUTION="${X11_WIDTH}x${X11_HEIGHT}"
+export X11_MODE="${X11_RESOLUTION}x${X11_DEPTH}"
+
 mkdir -p /var/run/sshd
 
 # This is the only effective way I found to obtain the full container id from
@@ -42,7 +57,7 @@ fi
 
 # Parse the templates and put their result in the appropriate places
 cat /templates/nginx.conf.template | envsubst '$JPY_BASE_USER_URL $URL_ID' > /etc/nginx/sites-enabled/default
-cat /templates/supervisord.conf.template | envsubst '$USER' > /etc/supervisor/conf.d/supervisord.conf
+cat /templates/supervisord.conf.template | envsubst '$USER $X11_MODE' > /etc/supervisor/conf.d/supervisord.conf
 
 # Start the services
 nginx -c /etc/nginx/nginx.conf

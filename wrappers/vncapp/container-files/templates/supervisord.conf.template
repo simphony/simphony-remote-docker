@@ -1,7 +1,7 @@
 [program:xvfb]
 priority=10
 directory=/
-command=/usr/bin/Xvfb :1 -screen 0 1024x768x16
+command=/usr/bin/Xvfb :1 -screen 0 ${X11_MODE}
 user=root
 autostart=true
 autorestart=true
