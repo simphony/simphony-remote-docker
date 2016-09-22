@@ -1,5 +1,7 @@
 FROM $IMAGE_NAME
 
+LABEL eu.simphony-project.docker.type="vncapp"
+
 # startup.sh noVNC front-end, websocket,
 # nginx template and supervisor template...
 COPY container-files/ /

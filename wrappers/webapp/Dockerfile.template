@@ -1,5 +1,7 @@
 FROM $IMAGE_NAME
 
+LABEL eu.simphony-project.docker.type="webapp"
+
 COPY container-files/ /
 
 WORKDIR /root
