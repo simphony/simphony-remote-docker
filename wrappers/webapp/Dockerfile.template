@@ -1,10 +1,10 @@
 FROM $IMAGE_NAME
 
 LABEL eu.simphony-project.docker.type="webapp" \
-      eu.simphony-project.docker.env.user \
-      eu.simphony-project.docker.env.jpy-user \
-      eu.simphony-project.docker.env.jpy-base-user-url \
-      eu.simphony-project.docker.env.url-id
+      eu.simphony-project.docker.env.user="" \
+      eu.simphony-project.docker.env.jpy-user="" \
+      eu.simphony-project.docker.env.jpy-base-user-url="" \
+      eu.simphony-project.docker.env.url-id=""
 
 COPY container-files/ /
 
