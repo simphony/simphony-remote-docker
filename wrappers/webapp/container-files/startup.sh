@@ -39,6 +39,8 @@ id -u $USER &>/dev/null || useradd --home-dir "/home/$USER" --shell /bin/bash --
 # home directory.
 mkdir -p "/home/$USER"
 rsync -r /etc/skel/ "/home/$USER"
+chown -R $USER:$USER "/home/$USER"
+tar -C /etc/skel --owner=$USER --group=$USER --one-file-system -cvf - . | tar -C /home/$USER -x --same-owner
 echo "$USER:$USER" | chpasswd
 
 # Make sure that the workspace is actually writable by the user.
