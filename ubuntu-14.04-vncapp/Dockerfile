@@ -78,6 +78,15 @@ RUN mkdir -p /var/cache/nginx/uwsgi_temp \
     /var/cache/nginx/client_temp \
      /etc/nginx/sites-enabled/
 
+LABEL eu.simphony-project.docker.type="vncapp" \
+      eu.simphony-project.docker.env.x11-width="" \
+      eu.simphony-project.docker.env.x11-height="" \
+      eu.simphony-project.docker.env.x11-depth="" \
+      eu.simphony-project.docker.env.user="" \
+      eu.simphony-project.docker.env.jpy-user="" \
+      eu.simphony-project.docker.env.jpy-base-user-url="" \
+      eu.simphony-project.docker.env.url-id=""
+
 # startup.sh noVNC front-end, websocket,
 # nginx template and supervisor template...
 COPY container-files/ /

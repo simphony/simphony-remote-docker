@@ -78,6 +78,12 @@ RUN mkdir -p /var/cache/nginx/uwsgi_temp \
     /var/cache/nginx/client_temp \
      /etc/nginx/sites-enabled/
 
+LABEL eu.simphony-project.docker.type="webapp" \
+      eu.simphony-project.docker.env.user="" \
+      eu.simphony-project.docker.env.jpy-user="" \
+      eu.simphony-project.docker.env.jpy-base-user-url="" \
+      eu.simphony-project.docker.env.url-id=""
+
 COPY container-files/ /
 
 WORKDIR /root

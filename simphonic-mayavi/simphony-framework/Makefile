@@ -83,7 +83,9 @@ fix-pip:
 	wget https://bootstrap.pypa.io/get-pip.py
 	python get-pip.py
 	rm get-pip.py
-	pip install --upgrade setuptools
+	# Fix version to 27.2. mayavi 4.5.0 does not play nice with setuptools 28.0. 
+	# See https://github.com/enthought/mayavi/issues/443
+	pip install setuptools==27.2
 	pip install --upgrade virtualenv
 	pip install --upgrade pip
 	@echo

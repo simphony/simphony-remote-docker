@@ -1,4 +1,4 @@
-FROM simphonyproject/ubuntu-12.04-vncapp:v0.3.0
+FROM simphonyproject/ubuntu-12.04-vncapp:v0.4.0
 LABEL eu.simphony-project.docker.ui_name="Simphony Framework (w/ Paraview)"
 LABEL eu.simphony-project.docker.description="Ubuntu machine with simphony framework preinstalled (with paraview)"
 

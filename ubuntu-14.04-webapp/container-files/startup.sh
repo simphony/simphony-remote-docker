@@ -32,7 +32,15 @@ _tmp=`cat /proc/self/cgroup | grep ":cpu" | head -1 | cut -d: -f 3`
 export URL_ID="`(test $URL_ID && echo $URL_ID) || basename $_tmp`"
 
 # Create the user
-id -u $USER &>/dev/null || useradd --create-home --shell /bin/bash --user-group $USER
+id -u $USER &>/dev/null || useradd --home-dir "/home/$USER" --shell /bin/bash --user-group $USER
+
+# We create and copy the skel directory manually. useradd --create-home does not copy the skel if
+# the directory is already there, as in the case someone mounted an external volume under the
+# home directory.
+mkdir -p "/home/$USER"
+rsync -r /etc/skel/ "/home/$USER"
+chown -R $USER:$USER "/home/$USER"
+tar -C /etc/skel --owner=$USER --group=$USER --one-file-system -cvf - . | tar -C /home/$USER -x --same-owner
 echo "$USER:$USER" | chpasswd
 
 # Make sure that the workspace is actually writable by the user.

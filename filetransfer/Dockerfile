@@ -1,4 +1,4 @@
-FROM simphonyproject/ubuntu-14.04-webapp:v0.3.0
+FROM simphonyproject/ubuntu-14.04-webapp:v0.4.0
 
 LABEL eu.simphony-project.docker.ui_name="File manager"
 LABEL eu.simphony-project.docker.description="Upload and download utility"
