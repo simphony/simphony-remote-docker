@@ -23,10 +23,11 @@ These scripts are driven by a configuration file `build.conf`. Details of its us
 provided in the inline comments.
 
 The simphony-remote-docker repository has two branches: 
-- `master` contains the above files, and all the generating infrastructure.
-- `production` contains the built and ready docker layout generated from the 
-  above scripts.  Autobuilds of docker images on Docker Hub is 
-  done from this branch.
+
+1. `master` contains the above files, and all the generating infrastructure.
+2. `production` contains the built and ready docker layout generated from the 
+    above scripts. Autobuilds of docker images on Docker Hub is 
+    done from this branch.
 
 Docker image names
 ------------------
@@ -35,7 +36,7 @@ Docker image names
          Ubuntu of a given version, together with the given wrapper.
          Example `simphonyproject/ubuntu-14.04-webapp:v0.3.0`
 
-3. `simphonyproject/{other_image_name}:{version}`
+2. `simphonyproject/{other_image_name}:{version}`
          Built on top of one of the above base images.
          Example `simphonyproject/filetransfer`
 
