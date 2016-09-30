@@ -30,8 +30,10 @@ RUN make apt-simphony-deps \
     lammps \
     jyu-lb
 
-# Install packages within the virtual environment
+# Install packages within the virtual environment.
+# Downgrade also the setuptools in the venv to 27.2.0 to workaround mayavi issue #443
 RUN /bin/bash -c 'source /simphony/bin/activate; \
+     pip install setuptools==27.2.0; \
      make simphony \
      simphony-mayavi \
      simphony-openfoam \
