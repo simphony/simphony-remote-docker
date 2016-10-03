@@ -121,6 +121,7 @@ To perform deployment you need to move the content of the `production` directory
 4. git add these content, tag them with the `vX.X.X` and push them to origin::
 
      $ git add .
+     $ git commit -m "version X.X.X"
      $ git tag vX.X.X
      $ git push --tags production origin
 
