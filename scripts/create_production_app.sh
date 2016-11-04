@@ -69,12 +69,6 @@ for image in `ls -d $app_images_dir/*/`; do
     # Replace the tag in the docker file FROM entry
     sed 's/^FROM \([^:]*\)/FROM \1:'$tag'/g' $production_dir/$image_name/Dockerfile > tmp
 
-    # if there's an icon, base encode it and use it.
-    if test -e $app_images_dir/$image_name/icon_128.png; then
-        b64encode $app_images_dir/$image_name/icon_128.png
-        echo "LABEL ${LABEL_DOMAIN}.docker.icon_128=\"${RESULT}\"" >>tmp
-    fi
-
     mv tmp $production_dir/$image_name/Dockerfile
 done
 

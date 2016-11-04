@@ -6,6 +6,10 @@
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 . functions.sh
 
+# All wrapped docker images will have the name $IMAGE_PREFIX/image_name
+# for them to be identified
+IMAGE_PREFIX=simphonyproject
+
 display_help() {
   echo "Usage: $0 config_file"
   echo
@@ -42,7 +46,7 @@ for image_dir in `ls -d $app_images_dir/*/`; do
     # One sub-directory for each image
     echo "Building "$production_dir/$image_name
 
-    $DIR/build_docker.sh $production_dir/$image_name
+    $DIR/build_docker.sh $IMAGE_PREFIX $production_dir/$image_name
     if test $? -ne 0; then
         echo "Error occurred while building $production_dir/$image_name. Exiting"
         exit
