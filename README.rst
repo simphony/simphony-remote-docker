@@ -4,7 +4,6 @@ Docker specification for SimPhoNy Remote App project
 Source code for composing Dockerfiles that support remote access using Simphony-remote web
 application.  Built docker images are hosted on DockerHub under the Simphony Organisation.
 
-
 Overall concept and layout
 --------------------------
 
@@ -159,8 +158,10 @@ For example, to build a base image from the base docker and the wrapper script, 
 
  To build an application image::
  
-  $ ./scripts/build_docker.sh ./production/simphony-framework-mayavi/ 
- 
+  $ ./scripts/build_docker.sh simphonyproject ./production/simphony-framework-mayavi/ 
+
+ where the first option ``simphonyproject`` is a prefix for the image name. The final image name 
+ will be ``prefix/dirname``, so in this case ``simphonyproject/simphony-framework-mayavi``
 
 Test remote access of an image locally
 --------------------------------------
@@ -189,8 +190,11 @@ Instead you should override the entrypoint::
 
 Running the docker image from the command-line is often useful for debugging.
 
-Make your own Docker images: vncapp
------------------------------------
+Make your own Docker images
+---------------------------
+
+vncapp
+~~~~~~
 
 You may build your own images that can be run with the remote access web application.
 
@@ -216,8 +220,8 @@ pretty name to the image by specifying the 'eu.simphony-project.docker.ui_name' 
 also provide a custom icon by first base encoding the image and then assigning the value to the
 'eu.simphony-project.docker.icon_128' label.
 
-Make your own Docker images: webapp
------------------------------------
+webapp
+~~~~~~
 
 To build a container hosting a web application, the process is similar to the vncapp,
 but we will use a different base image, and we need to provide an appropriate startup script.
@@ -245,3 +249,9 @@ If you want to run as user (recommended) you have to export HOME to the appropri
 path, and change to the specified user (e.g. using sudo or the appropriate
 options of your application) inside the `webapp.sh` script.
 
+Common
+~~~~~~
+
+Finally, to build the image run the ``build_docker.sh`` script on the directory 
+containing the Dockerfile. The ``icon_128.png`` file is the icon that the application
+will have in simphony-remote. It must be a 128x128 PNG image.
