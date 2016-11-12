@@ -23,29 +23,29 @@ provided in the inline comments.
 
 The simphony-remote-docker repository has two branches: 
 
-1. `master` contains the above files, and all the generating infrastructure.
-2. `production` contains the built and ready docker layout generated from the 
+1. ``master`` contains the above files, and all the generating infrastructure.
+2. ``production`` contains the built and ready docker layout generated from the 
     above scripts. Autobuilds of docker images on Docker Hub is 
     done from this branch.
 
 Docker image names
 ------------------
 
-1. `simphonyproject/ubuntu-<ubuntu-version>-<wrapper>:{version}`
+1. ``simphonyproject/ubuntu-<ubuntu-version>-<wrapper>:{version}``
          Ubuntu of a given version, together with the given wrapper.
-         Example `simphonyproject/ubuntu-14.04-webapp:v0.3.0`
+         Example ``simphonyproject/ubuntu-14.04-webapp:v0.3.0``
 
-2. `simphonyproject/{other_image_name}:{version}`
+2. ``simphonyproject/{other_image_name}:{version}``
          Built on top of one of the above base images.
          Example `simphonyproject/filetransfer`
 
 Docker build context for these images can be found in this repository in branch production, tag 
-`v{version}`.
+``v{version}``.
 
 **IMPORTANT**: Due to DockerHub limitations in tag management when building, 
-these tags `vX.X.X` are reserved to the production branch. They will be used to
+these tags ``vX.X.X`` are reserved to the production branch. They will be used to
 tag the docker images.  For the master commit that generated the production,
-use `master-vX.X.X` instead.
+use ``master-vX.X.X`` instead.
 
 Development/Deployment for DockerHub Repo
 -----------------------------------------
@@ -55,12 +55,12 @@ Build images
 
 To generate the usable Docker layout, follow these steps:
 
-1. git checkout the commit for deployment, then modify the `scripts/build.conf` to the
+1. git checkout the commit for deployment, then modify the ``scripts/build.conf`` to the
    appropriate tag. This parameter is used for specifying the version of the base images.
    Available tag can be found on simphonyproject/ubuntu-12.04-vncapp or 
    simphonyproject/ubuntu-14.04-vncapp/webapp on DockerHub. If you are doing development
-   you should use `latest`. If you are releasing a version, you should pick an appropriate
-   one, in the form `vX.X.X`. This tag will be added as the FROM dependency to all App images.
+   you should use ``latest``. If you are releasing a version, you should pick an appropriate
+   one, in the form ``vX.X.X``. This tag will be added as the FROM dependency to all App images.
 
 2. in the top directory, do::
 
@@ -77,36 +77,36 @@ Configure Docker Hub
 
 To do deployment and autobuild, first you have to configure DockerHub, but only if you added 
 new images to your collection. If so, follow these steps for each new image you
-want to add. Taking a freshly added `simphonyproject/filemanager` image as an
+want to add. Taking a freshly added ``simphonyproject/filemanager`` image as an
 example:
 
-1. Go to `hub.docker.com` and log in with your credentials to the `simphonyproject`.
+1. Go to ``hub.docker.com`` and log in with your credentials to the ``simphonyproject``.
    You need to be authorized to do so.
 
 2. Click `Create > Create automated build` in the topbar menu.
 
-3. Click the giant `create auto build Github` button, 
-   select `simphony` and `simphony-remote-docker`
+3. Click the giant ``create auto build Github`` button, 
+   select ``simphony`` and ``simphony-remote-docker``
 
 4. specify the conventional name (same as the directory you got out of
-   `production`: `filemanager`), title, and description. Click the customize button, and specify
+   ``production``: ``filemanager``), title, and description. Click the customize button, and specify
    two entries in the resulting list:
    
-   - Push type: Branch, Name: production, Dockerfile location: `/filemanager`, Docker tag: latest.
-   - Push type: tag, Name `/^v[0-9.]+$/`, Dockerfile location: `/filemanager`, Docker tag: <leave empty>
+   - Push type: Branch, Name: production, Dockerfile location: ``/filemanager``, Docker tag: latest.
+   - Push type: tag, Name ``/^v[0-9.]+$/``, Dockerfile location: ``/filemanager``, Docker tag: <leave empty>
 
 Now DockerHub is ready to automatically build the filemanager image when you push appropriately.
 
 Deploying images
 ''''''''''''''''
 
-To perform deployment you need to move the content of the `production` directory in the `production` branch:
+To perform deployment you need to move the content of the `production` directory in the ``production`` branch:
 
-1. tag with `master-vX.X.X` the commit you used to generate the production,
+1. tag with ``master-vX.X.X`` the commit you used to generate the production,
    possibly using a PR to do so while adding the appropriate docs, and change the tag as described
    above.
 
-2. git checkout the `production` branch. This branch is an orphan branch where the finalized
+2. git checkout the ``production`` branch. This branch is an orphan branch where the finalized
    Dockerfiles are stored::
 
      $ git checkout production
@@ -131,9 +131,9 @@ Development
 -----------
 
 The scripts directory contains building scripts to build the images in the
-`production` directory. Running the `create_production.sh` script is therefore
+``production`` directory. Running the ``create_production.sh`` script is therefore
 needed before using these scripts. To guarantee the use of the produced base
-images, the tag in the `build.conf` must be set to `latest`.
+images, the tag in the ``build.conf`` must be set to ``latest``.
 
 - ./scripts/build\_base.sh: Build base docker images from which other application docker images are built upon
 
@@ -166,7 +166,7 @@ For example, to build a base image from the base docker and the wrapper script, 
 Test remote access of an image locally
 --------------------------------------
 
-If you are on Linux, you may use a script provided `./scripts/test_noVNC_directly.sh`
+If you are on Linux, you may use a script provided ``./scripts/test_noVNC_directly.sh``
 directly in your terminal::
 
   $ ./scripts/test_noVNC_directly.sh image_name ./scripts/test_env_file test
