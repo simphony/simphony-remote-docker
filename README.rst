@@ -23,29 +23,29 @@ provided in the inline comments.
 
 The simphony-remote-docker repository has two branches: 
 
-1. `master` contains the above files, and all the generating infrastructure.
-2. `production` contains the built and ready docker layout generated from the 
+1. ``master`` contains the above files, and all the generating infrastructure.
+2. ``production`` contains the built and ready docker layout generated from the 
     above scripts. Autobuilds of docker images on Docker Hub is 
     done from this branch.
 
 Docker image names
 ------------------
 
-1. `simphonyproject/ubuntu-<ubuntu-version>-<wrapper>:{version}`
+1. ``simphonyproject/ubuntu-<ubuntu-version>-<wrapper>:{version}``
          Ubuntu of a given version, together with the given wrapper.
-         Example `simphonyproject/ubuntu-14.04-webapp:v0.3.0`
+         Example ``simphonyproject/ubuntu-14.04-webapp:v0.3.0``
 
-2. `simphonyproject/{other_image_name}:{version}`
+2. ``simphonyproject/{other_image_name}:{version}``
          Built on top of one of the above base images.
          Example `simphonyproject/filetransfer`
 
 Docker build context for these images can be found in this repository in branch production, tag 
-`v{version}`.
+``v{version}``.
 
 **IMPORTANT**: Due to DockerHub limitations in tag management when building, 
-these tags `vX.X.X` are reserved to the production branch. They will be used to
+these tags ``vX.X.X`` are reserved to the production branch. They will be used to
 tag the docker images.  For the master commit that generated the production,
-use `master-vX.X.X` instead.
+use ``master-vX.X.X`` instead.
 
 Development/Deployment for DockerHub Repo
 -----------------------------------------
@@ -55,12 +55,12 @@ Build images
 
 To generate the usable Docker layout, follow these steps:
 
-1. git checkout the commit for deployment, then modify the `scripts/build.conf` to the
+1. git checkout the commit for deployment, then modify the ``scripts/build.conf`` to the
    appropriate tag. This parameter is used for specifying the version of the base images.
    Available tag can be found on simphonyproject/ubuntu-12.04-vncapp or 
    simphonyproject/ubuntu-14.04-vncapp/webapp on DockerHub. If you are doing development
-   you should use `latest`. If you are releasing a version, you should pick an appropriate
-   one, in the form `vX.X.X`. This tag will be added as the FROM dependency to all App images.
+   you should use ``latest``. If you are releasing a version, you should pick an appropriate
+   one, in the form ``vX.X.X``. This tag will be added as the FROM dependency to all App images.
 
 2. in the top directory, do::
 
@@ -77,36 +77,36 @@ Configure Docker Hub
 
 To do deployment and autobuild, first you have to configure DockerHub, but only if you added 
 new images to your collection. If so, follow these steps for each new image you
-want to add. Taking a freshly added `simphonyproject/filemanager` image as an
+want to add. Taking a freshly added ``simphonyproject/filemanager`` image as an
 example:
 
-1. Go to `hub.docker.com` and log in with your credentials to the `simphonyproject`.
+1. Go to ``hub.docker.com`` and log in with your credentials to the ``simphonyproject``.
    You need to be authorized to do so.
 
 2. Click `Create > Create automated build` in the topbar menu.
 
-3. Click the giant `create auto build Github` button, 
-   select `simphony` and `simphony-remote-docker`
+3. Click the giant ``create auto build Github`` button, 
+   select ``simphony`` and ``simphony-remote-docker``
 
 4. specify the conventional name (same as the directory you got out of
-   `production`: `filemanager`), title, and description. Click the customize button, and specify
+   ``production``: ``filemanager``), title, and description. Click the customize button, and specify
    two entries in the resulting list:
    
-   - Push type: Branch, Name: production, Dockerfile location: `/filemanager`, Docker tag: latest.
-   - Push type: tag, Name `/^v[0-9.]+$/`, Dockerfile location: `/filemanager`, Docker tag: <leave empty>
+   - Push type: Branch, Name: production, Dockerfile location: ``/filemanager``, Docker tag: latest.
+   - Push type: tag, Name ``/^v[0-9.]+$/``, Dockerfile location: ``/filemanager``, Docker tag: <leave empty>
 
 Now DockerHub is ready to automatically build the filemanager image when you push appropriately.
 
 Deploying images
 ''''''''''''''''
 
-To perform deployment you need to move the content of the `production` directory in the `production` branch:
+To perform deployment you need to move the content of the `production` directory in the ``production`` branch:
 
-1. tag with `master-vX.X.X` the commit you used to generate the production,
+1. tag with ``master-vX.X.X`` the commit you used to generate the production,
    possibly using a PR to do so while adding the appropriate docs, and change the tag as described
    above.
 
-2. git checkout the `production` branch. This branch is an orphan branch where the finalized
+2. git checkout the ``production`` branch. This branch is an orphan branch where the finalized
    Dockerfiles are stored::
 
      $ git checkout production
@@ -131,9 +131,9 @@ Development
 -----------
 
 The scripts directory contains building scripts to build the images in the
-`production` directory. Running the `create_production.sh` script is therefore
+``production`` directory. Running the ``create_production.sh`` script is therefore
 needed before using these scripts. To guarantee the use of the produced base
-images, the tag in the `build.conf` must be set to `latest`.
+images, the tag in the ``build.conf`` must be set to ``latest``.
 
 - ./scripts/build\_base.sh: Build base docker images from which other application docker images are built upon
 
@@ -166,14 +166,13 @@ For example, to build a base image from the base docker and the wrapper script, 
 Test remote access of an image locally
 --------------------------------------
 
-If you are on Linux, you may use a script provided `./scripts/test_noVNC_directly.sh`
+If you are on Linux, you may use a script provided ``./scripts/test_noVNC_directly.sh``
 directly in your terminal::
 
   $ ./scripts/test_noVNC_directly.sh image_name ./scripts/test_env_file test
 
 On Mac OS X, you should run the above script in your docker VM.
 You should clean up the started container once you finish testing.
-
 
 Running built images on the command-line
 ----------------------------------------
@@ -193,19 +192,27 @@ Running the docker image from the command-line is often useful for debugging.
 Make your own Docker images
 ---------------------------
 
+To build your own image, you need to create a directory named like the image (e.g. ``myprogram``).
+Inside this directory, you must have:
+
+- a Dockerfile
+- optionally: a ``icon_128.png`` file containing the icon in 128x128 px.
+- other files that you might need, depending if you want a vnc or web application. 
+- all the files you need to build your program.
+
+It is suggested to take as an example the current images built for the Simphony Organisation. 
+
 vncapp
-~~~~~~
+''''''
 
-You may build your own images that can be run with the remote access web application.
-
-First, you should compose your docker image based on one of the base images hosted on DockerHub
-un the Simphony Organisation.  For example, in your Dockerfile::
+For a VNC application, you should build from the vncapp image. Your Dockerfile should have the
+following line::
 
   FROM simphonyproject/ubuntu-14.04-vncapp
 
-Secondly, you should provide an autostart file that contains the commands to be executed on startup.
-Otherwise the desktop would be blank.  The autostart file should be executable by the user
-and should be placed in `/etc/skel/.config/openbox/autostart`.
+You also must provide an autostart file that contains the commands to be executed on startup.
+Otherwise the desktop would be blank.  The autostart file must be executable by the user
+and placed in `/etc/skel/.config/openbox/autostart`.
 
 For example, the Simphony Mayavi image autostarts with the Mayavi2 application by having the
 following in its Dockerfile::
@@ -215,13 +222,10 @@ following in its Dockerfile::
   RUN chmod 755 /etc/skel/.config/openbox/autostart
 
 Note: Further customisation related to the remote access web application should be referred to
-github.com/simphony/simphony-remote (pending). At the time of writing, you may attach a
-pretty name to the image by specifying the 'eu.simphony-project.docker.ui_name' label.  You may
-also provide a custom icon by first base encoding the image and then assigning the value to the
-'eu.simphony-project.docker.icon_128' label.
+github.com/simphony/simphony-remote (pending). 
 
 webapp
-~~~~~~
+''''''
 
 To build a container hosting a web application, the process is similar to the vncapp,
 but we will use a different base image, and we need to provide an appropriate startup script.
@@ -233,7 +237,7 @@ The wrapper is configured to start up, via supervisord, the script `webapp.sh` i
 directory. This script is executed as root, and must start the web application.
 There are a few caveats to the web application requirements for export:
 
-- It must listen on port 6081. nginx will reverse proxy it to port 8888
+- It must listen on port 6081. An internal nginx will reverse proxy it to port 8888
 - Note that nginx will _not_ perform any URL rewriting, so the application
   must be able to deal with the full URL. In general this is provided as an option
   `base url`. A common gotcha for this is to have an application that does not
@@ -244,14 +248,33 @@ There are a few caveats to the web application requirements for export:
   application, so your application will see requests coming from nginx. This
   might have consequences depending on how your application is designed.
 
-The `webapp.sh`, and thus your application, will be started as root with HOME set as `/root`
+The ``webapp.sh``, and thus your application, will be started as root with HOME set as `/root`
 If you want to run as user (recommended) you have to export HOME to the appropriate
 path, and change to the specified user (e.g. using sudo or the appropriate
 options of your application) inside the `webapp.sh` script.
 
 Common
-~~~~~~
+''''''
 
-Finally, to build the image run the ``build_docker.sh`` script on the directory 
+At the time of writing, you may add labels to improve the visual aspect of your image.
+The following labels are defined:
+
+- ``eu.simphony-project.docker.ui_name``: The label that will be used as a title name in the UI.
+- ``eu.simphony-project.docker.icon_128``: a base64 encoded icon. You don't normally add it 
+  yourself as a label. You use the build script to encode an ``icon_128.png`` file for you.
+  
+To build the image, run the ``build_docker.sh`` script on the directory 
 containing the Dockerfile. The ``icon_128.png`` file is the icon that the application
 will have in simphony-remote. It must be a 128x128 PNG image.
+
+Verification and Debug
+''''''''''''''''''''''
+
+You can test vnc images directly by using the ``test_novnc_directly.sh`` script.
+
+If something goes wrong, use the following command to enter into the container::
+
+    docker run -it bash container_id
+    
+and try to start the application manually, or check the logs in /var/log.
+
