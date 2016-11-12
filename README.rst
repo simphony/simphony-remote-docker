@@ -196,7 +196,7 @@ To build your own image, you need to create a directory named like the image (e.
 Inside this directory, you must have:
 
 - a Dockerfile
-- optionally: a ``icon_128.png` file containing the icon in 128x128 px.
+- optionally: a ``icon_128.png`` file containing the icon in 128x128 px.
 - other files that you might need, depending if you want a vnc or web application. 
 - all the files you need to build your program.
 
