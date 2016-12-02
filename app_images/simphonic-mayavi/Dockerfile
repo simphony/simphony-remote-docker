@@ -3,42 +3,23 @@ FROM simphonyproject/ubuntu-14.04-vncapp
 LABEL eu.simphony-project.docker.ui_name="Simphony Framework (w/ Mayavi)"
 LABEL eu.simphony-project.docker.description="Ubuntu machine with simphony framework preinstalled"
 
+RUN apt-get update -qq \
+    && apt-get install -y make git \
+    && git clone https://github.com/simphony/simphony-framework.git /tmp/simphony-framework \
+    && cd /tmp/simphony-framework 
 
 # Simphony Framework with mayavi
-COPY simphony-framework /tmp/simphony-framework
 WORKDIR /tmp/simphony-framework
-
-# Fix pip
-RUN apt-get update -qq \
-    && apt-get install -y make \
-    && make base fix-pip
 
 # Virtual environments for PYTHONPATH etc.
 ENV SIMPHONYENV /simphony
 
-# Create virtual environment with system site-packages
-RUN virtualenv --system-site-packages $SIMPHONYENV
-
 # Make sure that the virtual environment would be activated on startup
 RUN /bin/bash -c 'echo ". $SIMPHONYENV/bin/activate" >> /etc/skel/.bashrc'
 
-# These are installed before loading the virtualenv
-RUN make apt-simphony-deps \
-    apt-openfoam-deps \
-    apt-mayavi-deps \
-    apt-lammps-deps \
-    lammps \
-    jyu-lb
-
-# Install packages within the virtual environment.
-# Downgrade also the setuptools in the venv to 27.2.0 to workaround mayavi issue #443
-RUN /bin/bash -c 'source /simphony/bin/activate; \
-     pip install setuptools==27.2.0; \
-     make simphony \
-     simphony-mayavi \
-     simphony-openfoam \
-     simphony-jyu-lb \
-     simphony-lammps' \
+RUN /bin/bash -c 'make deps apt-mayavi-deps venv-prepare \
+     && source /simphony/bin/activate \
+     && make simphony simphony-mayavi' \
      && rm -rf /var/lib/apt/lists/*
 
 # The Openfoam Ubuntu prebuilt package installs the library in
