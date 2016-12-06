@@ -1,33 +1,32 @@
 FROM simphonyproject/ubuntu-12.04-vncapp
+
 LABEL eu.simphony-project.docker.ui_name="Simphony Framework (w/ Paraview)"
 LABEL eu.simphony-project.docker.description="Ubuntu machine with simphony framework preinstalled (with paraview)"
 
+RUN apt-get update -qq \
+    && apt-get install -y make git lsb-release software-properties-common python-software-properties \
+    && add-apt-repository 'deb http://us.archive.ubuntu.com/ubuntu/ precise multiverse' \
+    && apt-get update -qq \
+    && apt-get install -y libcgal8 libcgal-dev \
+    && git clone https://github.com/simphony/simphony-framework.git /tmp/simphony-framework 
 
-COPY simphony-framework /tmp/simphony-framework
+# Virtual environments for PYTHONPATH etc.
+ENV SIMPHONYENV /simphony
+
 WORKDIR /tmp/simphony-framework
 
-# From this point on we should install python packages in site-package
-# not dist-pakcage (ubuntu's default)
-ENV PREFIX /usr/local
-ENV PYTHONPATH /usr/local/lib/python2.7/site-packages
+# Make sure that the virtual environment would be activated on startup
+RUN /bin/bash -c 'echo ". $SIMPHONYENV/bin/activate" >> /etc/skel/.bashrc'
 
-RUN apt-get update -qq \
-    && apt-get install -y make \
-    && make base \
-    apt-openfoam-deps \
-    apt-simphony-deps \
-    apt-paraview-deps \
-    apt-lammps-deps \
-    fix-pip \
-    fix-python-path \
-    lammps \
-    jyu-lb \
-    simphony \
-    simphony-paraview \
-    simphony-openfoam \
-    simphony-jyu-lb \
-    simphony-lammps \
-    && rm -rf /var/lib/apt/lists/*
+RUN /bin/bash -c 'make deps apt-paraview-deps venv-prepare \
+     && source $SIMPHONYENV/bin/activate \
+     && make simphony simphony-paraview' \
+     && rm -rf /var/lib/apt/lists/*
+
+# The Openfoam Ubuntu prebuilt package installs the library in
+# /root/OpenFOAM/-2.3.0/platforms/linux64GccDPOpt/lib
+# which is not accessible by the user, they need to be copied over
+RUN cp -rf /root/OpenFOAM/-2.3.0/platforms/linux64GccDPOpt/lib/* $SIMPHONYENV/lib
 
 # Examples files for simphony paraview
 # and put it on the Desktop
