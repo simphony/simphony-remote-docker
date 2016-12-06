@@ -49,5 +49,5 @@ RUN apt-get install -y ipython ipython-qtconsole \
 # Autostart IPython Qtconsole
 # Create directory for openbox user's config
 RUN mkdir -p /etc/skel/.config/openbox
-RUN /bin/bash -c 'echo "ipython qtconsole" > /etc/skel/.config/openbox/autostart'
+RUN /bin/bash -c 'echo ". $SIMPHONYENV/bin/activate; ipython qtconsole" > /etc/skel/.config/openbox/autostart'
 RUN chmod 755 /etc/skel/.config/openbox/autostart
