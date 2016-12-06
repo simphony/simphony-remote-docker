@@ -49,7 +49,7 @@ if [ -e icon_128.png ]; then
     echo "LABEL ${LABEL_DOMAIN}.docker.icon_128=\"${RESULT}\"" >>Dockerfile.build
 fi
 
-docker build --rm -f Dockerfile.build -t $IMAGE_TAG .
+docker build --no-cache --rm -f Dockerfile.build -t $IMAGE_TAG .
 
 status=$?
 
