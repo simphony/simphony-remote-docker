@@ -8,7 +8,9 @@ RUN apt-get update -qq \
     && add-apt-repository 'deb http://us.archive.ubuntu.com/ubuntu/ precise multiverse' \
     && apt-get update -qq \
     && apt-get install -y libcgal8 libcgal-dev \
-    && git clone https://github.com/simphony/simphony-framework.git /tmp/simphony-framework 
+    && git clone https://github.com/simphony/simphony-framework.git /tmp/simphony-framework \
+    && cd /tmp/simphony-framework \
+    && git checkout 0.3.0
 
 # Virtual environments for PYTHONPATH etc.
 ENV SIMPHONYENV /simphony
