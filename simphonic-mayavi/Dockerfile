@@ -6,7 +6,8 @@ LABEL eu.simphony-project.docker.description="Ubuntu machine with simphony frame
 RUN apt-get update -qq \
     && apt-get install -y make git \
     && git clone https://github.com/simphony/simphony-framework.git /tmp/simphony-framework \
-    && cd /tmp/simphony-framework 
+    && cd /tmp/simphony-framework \
+    && git checkout 0.3.0
 
 # Simphony Framework with mayavi
 WORKDIR /tmp/simphony-framework
