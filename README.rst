@@ -62,15 +62,16 @@ To generate the usable Docker layout, follow these steps:
    you should use ``latest``. If you are releasing a version, you should pick an appropriate
    one, in the form ``vX.X.X``. This tag will be added as the FROM dependency to all App images.
 
-2. in the top directory, do::
+2. in the scripts directory, do::
 
-     $ ./scripts/create_production.sh ./build.conf
+     $ sh create_production.sh ./build.conf
 
    This generates the `production` directory containing the built Dockerfile and 
    the associated files.
 
 These two steps are enough to create the buildable Dockerfiles and the associated
-files. Skip to `Development` section if that's the case.
+files. Skip to `Development` section if that's all you need to perform development,
+or continue to do a production release.
 
 Configure Docker Hub
 ''''''''''''''''''''
