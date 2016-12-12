@@ -72,7 +72,7 @@ for image in `ls -d $app_images_dir/*/`; do
     # if there's an icon, base encode it and use it.
     if [ -e $production_dir/$image_name/icon_128.png ]; then
         b64encode $production_dir/$image_name/icon_128.png
-        echo "LABEL ${LABEL_DOMAIN}.docker.icon_128=\"${RESULT}\"" >>$production_dir/$image_name/$Dockerfile.build
+        echo "LABEL ${LABEL_DOMAIN}.docker.icon_128=\"${RESULT}\"" >>$production_dir/$image_name/Dockerfile.build
     fi
 
     mv $production_dir/$image_name/Dockerfile.build $production_dir/$image_name/Dockerfile
