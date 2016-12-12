@@ -1,6 +1,20 @@
 SimPhoNy Remote Docker CHANGELOG
 ================================
 
+Release 0.5.0/0.5.1
+-------------------
+
+Features
+~~~~~~~~
+
+- Documentation updates (#45, #49, #50)
+- Easier script to build without deploying (#48)
+- Added support for LIGGHTS in both mayavi and paraview. (#51)
+  This PR also removes the personalized simphony-framework build, and instead checks out the one
+  from the repo.
+- Pinned simphony-framework version to 0.3.0 (#52)
+- (0.5.1) Fixed missing icon (#54)
+
 Release 0.4.0
 -------------
 
