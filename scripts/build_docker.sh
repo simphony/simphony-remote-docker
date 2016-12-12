@@ -1,18 +1,9 @@
 #!/bin/bash
 # Script that builds a given directory into a docker application image.
 
-LABEL_DOMAIN=eu.simphony-project
+. functions.sh
 
-function b64encode {
-    if test "`which uuencode`" != ""; then
-        RESULT=`uuencode -m $1 $1 | sed '1d;$d'| tr -d '\n'`
-    elif test "`which base64`" != ""; then
-        RESULT=`base64 -w 0 $1`
-    else
-        echo "Cannot find base64 encoder utility"
-        exit 1
-    fi
-}
+LABEL_DOMAIN=eu.simphony-project
 
 # All wrapped docker images will have the name $IMAGE_PREFIX/image_name
 # for them to be identified
