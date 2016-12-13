@@ -52,4 +52,4 @@ Other topics
 
 - `Develop and deploy the images <docs/develop_and_deploy.rst>`_
 - `Make your own images <docs/make_own.rst>`_
-- `Debugging tips <docs/debuggging.rst>`_
+- `Debugging tips <docs/debugging.rst>`_
