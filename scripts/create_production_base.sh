@@ -8,7 +8,7 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 . $DIR/functions.sh
 
 display_help() {
-  echo "Usage: $0 build.conf"
+  echo "Usage: $0 path/to/build.conf"
   echo
   echo "Creates a production directory containing the docker context for DockerHub auto build."
   echo "Used for deploying base images with the remote access support already included."
