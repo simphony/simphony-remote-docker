@@ -5,7 +5,7 @@ set -e
 # The path to this script file
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-. functions.sh
+. $DIR/functions.sh
 
 display_help() {
   echo "Usage: $0 build.conf"
@@ -23,35 +23,36 @@ if [ -z "$1" ]; then
 fi
 
 config_file=$1
+operating_dir=`dirname $config_file`/
 
 # The directory that contains all base images
-extract_key "$DIR/$config_file" "base_images_dir"
+extract_key "$config_file" "base_images_dir"
 if [ -z "$RESULT" ]; then
     echo "Need base_images_dir in config file"
     display_help
     exit 1
 fi
-base_images_dir=$DIR/${RESULT%/}
+base_images_dir=$operating_dir/${RESULT}
 
 # production directory
-extract_key "$DIR/$config_file" "production_dir"
+extract_key "$config_file" "production_dir"
 if [ -z "$RESULT" ]; then
     echo "Need production_dir in config file"
     display_help
     exit 1
 fi
-production_dir=$DIR/${RESULT%/}
+production_dir=$operating_dir/${RESULT}
 
 # The directory that provides the front-end/back-end support for remote access
-extract_key "$DIR/$config_file" "wrappers_dir"
+extract_key "$config_file" "wrappers_dir"
 if [ -z "$RESULT" ]; then
     echo "Need wrappers_dir in config file"
     display_help
     exit 1
 fi
-wrappers_dir=$DIR/${RESULT%/}
+wrappers_dir=$operating_dir/${RESULT%/}
 
-extract_key "$DIR/$config_file" "build_base"
+extract_key "$config_file" "build_base"
 if [ -z "$RESULT" ]; then
     echo "Need build_base in config file"
     display_help
