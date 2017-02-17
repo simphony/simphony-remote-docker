@@ -4,7 +4,7 @@
 
 # The path to this script file
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-. functions.sh
+. $DIR/functions.sh
 
 # All wrapped docker images will have the name $IMAGE_PREFIX/image_name
 # for them to be identified
@@ -24,37 +24,25 @@ if [ -z "$1" ]; then
 fi
 
 config_file=$1
+operating_dir=`dirname $config_file`/
 
 # production directory
-extract_key "$DIR/$config_file" "production_dir"
+extract_key "$config_file" "production_dir"
 if [ -z "$RESULT" ]; then
     echo "Need production_dir in config file"
     display_help
     exit 1
 fi
-production_dir=$DIR/${RESULT%/}
-
-extract_key "$DIR/$config_file" "build_base"
-if [ -z "$RESULT" ]; then
-    echo "Need build_base in config file"
-    display_help
-    exit 1
-fi
-build_base=$RESULT
+production_dir=$operating_dir/${RESULT%/}
 
 # Construct docker context for production
-for entry in $build_base; do
-    base_image_name=`echo $entry | cut -d':' -f1`
-    wrapper_name=`echo $entry | cut -d':' -f2`
-    final_image_name=${base_image_name}-${wrapper_name}
-
+for entry in `ls -d $production_dir/*/`; do
     # One sub-directory for each image
-    echo "Building "$production_dir/$final_image_name
+    echo "Building "$entry 
 
-    $DIR/build_docker.sh $IMAGE_PREFIX $production_dir/$final_image_name
+    $DIR/build_docker.sh $IMAGE_PREFIX $entry
     if test $? -ne 0; then
-        echo "Error occurred while building $production_dir/$final_image_name. Exiting"
+        echo "Error occurred while building $entry. Exiting"
         exit
     fi
 done
-
