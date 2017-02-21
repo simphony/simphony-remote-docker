@@ -1,6 +1,11 @@
 Docker specification for SimPhoNy Remote App project
 ====================================================
 
+**NOTE: This repository is legacy. Current development above version 0.5.1 is done in separate
+repositories (``simphony-remote-docker-*``). Relevant scripts are available at ``simphony-remote-docker-scripts``.**
+
+
+
 Source code for composing Dockerfiles that support remote access using Simphony-remote web
 application.  Built docker images are hosted on DockerHub under the Simphony Organisation.
 
