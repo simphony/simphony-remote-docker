@@ -1,6 +1,5 @@
 #!/bin/bash
-# This script is used for deploying base images for its
-# DockerHub Automated Build Repository.
+# This script is used for deploying the buildable docker files from the user-specified template.
 set -e
 # The path to this script file
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
@@ -10,8 +9,7 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 display_help() {
   echo "Usage: $0 path/to/build.conf"
   echo
-  echo "Creates a production directory containing the docker context for DockerHub auto build."
-  echo "Used for deploying base images with the remote access support already included."
+  echo "Creates a production directory containing the appropriate docker context."
   echo
 }
 

@@ -6,10 +6,6 @@
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 . $DIR/functions.sh
 
-# All wrapped docker images will have the name $IMAGE_PREFIX/image_name
-# for them to be identified
-IMAGE_PREFIX=simphonyproject
-
 display_help() {
   echo "Usage: $0 config_file"
   echo
@@ -35,12 +31,32 @@ if [ -z "$RESULT" ]; then
 fi
 production_dir=$operating_dir/${RESULT%/}
 
+# The directory that contains all base images
+extract_key "$config_file" "image_prefix"
+if [ -z "$RESULT" ]; then
+    echo "Need image_prefix in config file"
+    display_help
+    exit 1
+fi
+image_prefix=${RESULT}
+
+# The directory that contains all base images
+extract_key "$config_file" "tag"
+if [ -z "$RESULT" ]; then
+    echo "Need tag in config file"
+    display_help
+    exit 1
+fi
+tag=${RESULT}
+
 # Construct docker context for production
 for entry in `ls -d $production_dir/*/`; do
     # One sub-directory for each image
+    image_name=`basename $entry`
     echo "Building "$entry 
 
-    $DIR/build_docker.sh $IMAGE_PREFIX $entry
+    docker build --no-cache --rm -f $entry/Dockerfile -t $image_prefix/$image_name:$tag .
+
     if test $? -ne 0; then
         echo "Error occurred while building $entry. Exiting"
         exit

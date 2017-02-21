@@ -1,19 +1,18 @@
 #!/bin/bash
-# This scripts rebuilds the whole set of containers. Be careful because it invalidates previous
+# This scripts builds the application. Be careful because it invalidates previous
 # containers already stored in the docker server.
+# It is designed to be a convenience wrapper to pass the right arguments to docker build, 
+# extracting them from the config file. It must be possible to perform the build anyway 
+# just with plain docker build, only that the parameters must be specified manually. 
 
 # The path to this script file
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 . $DIR/functions.sh
 
-# All wrapped docker images will have the name $IMAGE_PREFIX/image_name
-# for them to be identified
-IMAGE_PREFIX=simphonyproject
-
 display_help() {
   echo "Usage: $0 config_file"
   echo
-  echo "Builds all the application containers from the production directory specified in the configuration file."
+  echo "Builds the application from the production directory specified in the configuration file."
 }
 
 if [ -z "$1" ]; then
@@ -44,10 +43,30 @@ fi
 app_dir=$operating_dir/${RESULT%/}
 image_name=`basename $app_dir`
 
-# There should be only one, but you never know
+# The directory that contains all base images
+extract_key "$config_file" "tag"
+if [ -z "$RESULT" ]; then
+    echo "Need tag in config file"
+    display_help
+    exit 1
+fi
+tag=${RESULT}
+
+# The directory that contains all base images
+extract_key "$config_file" "image_prefix"
+if [ -z "$RESULT" ]; then
+    echo "Need image_prefix in config file"
+    display_help
+    exit 1
+fi
+image_prefix=${RESULT}
+
 echo "Building "$image_name
 
-$DIR/build_docker.sh $IMAGE_PREFIX $production_dir/$image_name
+pushd $production_dir/$image_name
+
+docker build --no-cache --rm -f Dockerfile -t $image_prefix/$image_name:$tag .
+
 if test $? -ne 0; then
     echo "Error occurred while building $image_name. Exiting"
     exit

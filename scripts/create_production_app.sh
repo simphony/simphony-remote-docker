@@ -1,10 +1,11 @@
 #!/bin/bash
-# This script is used for deploying application images for its
-# DockerHub Automated Build Repository.
+# This script is a preprocessor to build the production (final) Docker setup from the initial template.
+
 set -e
 # The path to this script file
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
+# This is the namespace for our docker labels.
 LABEL_DOMAIN=eu.simphony-project
 
 . $DIR/functions.sh
@@ -12,7 +13,7 @@ LABEL_DOMAIN=eu.simphony-project
 display_help() {
   echo "Usage: $0 path/to/build.conf"
   echo
-  echo "Creates a production directory containing the docker context for DockerHub auto build"
+  echo "Creates a production directory containing the appropriate docker context"
   echo
 }
 
@@ -41,7 +42,7 @@ if [ -z "$RESULT" ]; then
     display_help
     exit 1
 fi
-tag=$RESULT
+base_tag=`basename $RESULT`
 
 # production directory
 extract_key "$config_file" "production_dir"
@@ -53,18 +54,22 @@ fi
 production_dir=$operating_dir/${RESULT%/}
 image_name=`basename $app_dir`
 
-# One sub-directory for each image
 echo "Removing "$production_dir/$image_name
 rm -rf $production_dir/$image_name
 
 echo "Creating "$production_dir/$image_name
 mkdir -p $production_dir/$image_name
-# Copy files from the image directory to the production sub-directory
+
 echo "Copying files from " $app_dir " to " $production_dir/$image_name
 rsync -a --exclude='*~' $app_dir/* $production_dir/$image_name/
 
+# Create the final Dockerfile from the "template" one
+
 # Replace the tag in the docker file FROM entry
-sed 's/^FROM \([^:]*\)/FROM \1:'$base_tag'/g' $production_dir/$image_name/Dockerfile > $production_dir/$image_name/Dockerfile.build
+# Get it out of the way so if it fails we are guaranteed not to use a broken dockerfile.
+mv $production_dir/$image_name/Dockerfile $production_dir/$image_name/Dockerfile.template 
+sed 's/^FROM \([^:]*\)/FROM \1:'$base_tag'/g' $production_dir/$image_name/Dockerfile.template > $production_dir/$image_name/Dockerfile.build
+rm $production_dir/$image_name/Dockerfile.template 
 
 # if there's an icon, base encode it and use it.
 if [ -e $production_dir/$image_name/icon_128.png ]; then
@@ -72,6 +77,7 @@ if [ -e $production_dir/$image_name/icon_128.png ]; then
     echo "LABEL ${LABEL_DOMAIN}.docker.icon_128=\"${RESULT}\"" >>$production_dir/$image_name/Dockerfile.build
 fi
 
+# Set the final dockerfile from the one just built
 mv $production_dir/$image_name/Dockerfile.build $production_dir/$image_name/Dockerfile
 
 echo "***********************************************************************"
