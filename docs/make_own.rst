@@ -1,8 +1,12 @@
 Make your own Docker images
 ---------------------------
 
-To build your own image, you need to create a directory named like the image (e.g. ``myprogram``).
-Inside this directory, you must have:
+To build your own image, you need to create a base directory (which is normally a github repo).
+Inside this directory, you need:
+ - a ``build.conf`` file 
+ - a directory named like the image (e.g. ``myprogram``).
+
+Inside the ``myprogram`` directory, you must have:
 
 - a Dockerfile
 - optionally: a ``icon_128.png`` file containing the icon in 128x128 px.
@@ -17,7 +21,7 @@ vncapp
 For a VNC application, you should build from the vncapp image. Your Dockerfile should have the
 following line::
 
-  FROM simphonyproject/ubuntu-14.04-vncapp
+  FROM simphonyproject/ubuntu-14.04-2-vncapp
 
 You also must provide an autostart file that contains the commands to be executed on startup.
 Otherwise the desktop would be blank.  The autostart file must be executable by the user
@@ -40,7 +44,7 @@ To build a container hosting a web application, the process is similar to the vn
 but we will use a different base image, and we need to provide an appropriate startup script.
 The wrapper to use is webapp, and is selected as before::
 
-  FROM simphonyproject/ubuntu-14.04-webapp
+  FROM simphonyproject/ubuntu-14.04-2-webapp
 
 The wrapper is configured to start up, via supervisord, the script `webapp.sh` in the `/`
 directory. This script is executed as root, and must start the web application.
@@ -86,3 +90,36 @@ If something goes wrong, use the following command to enter into the container::
     docker run -it bash container_id
     
 and try to start the application manually, or check the logs in /var/log.
+
+Legacy images
+-------------
+
+These images available on Docker hub are all legacy and should not be used:
+
+    - simphonyproject/ubuntu-14.04-remote
+    - simphonyproject/ubuntu-12.04-remote
+    - simphonyproject/ubuntu-14.04-webapp
+    - simphonyproject/ubuntu-14.04-vncapp
+    - simphonyproject/ubuntu-12.04-vncapp
+    - simphonyproject/filetransfer
+    - simphonyproject/jupyter
+    - simphonyproject/simphonic-mayavi
+    - simphonyproject/simphonic-paraview
+
+These images were used with a different github repo layout, that made all images build part of a single
+build. The new layout has individual repositories for each application. It was not possible to reuse those
+names above (although it would look possible and convenient) because it would have required to change the
+repository source associated to each automatic build. This is not possible on docker hub, unless the automatic
+build (and thus all associated images) is deleted. Clearly not an option.
+
+As a workaround, new named builds have been created, associated to the new github repos. They are:
+
+    - simphonyproject/ubuntu-14.04-2-webapp
+    - simphonyproject/ubuntu-14.04-2-vncapp
+    - simphonyproject/ubuntu-12.04-2-vncapp
+    - simphonyproject/filemanager
+    - simphonyproject/jupyter-notebook
+    - simphonyproject/simphony-mayavi
+    - simphonyproject/simphony-paraview
+
+As of refactoring of February 21st, these images should be used instead.
